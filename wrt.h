@@ -128,6 +128,7 @@ static void process_json() {
 enum {
   fsm_data_0, fsm_data_1, fsm_data_2, fsm_data_3, fsm_data_4, fsm_data_5,
   fsm_done_0, fsm_done_1, fsm_done_2, fsm_done_3, fsm_done_4, fsm_done_5, fsm_done_6, fsm_done_7, fsm_done_8,
+  fsm_dump,
   fsm_json,
   fsm_after_eol,
 } fsm = fsm_data_0;
@@ -139,7 +140,17 @@ static void chk(char c, char e) {
 }
 static void pump(char c) {
   switch (fsm) {
-    case fsm_data_0: chk(c, 'd'); fsm++; break;
+    case fsm_dump: putc(c, stderr); break;
+
+    case fsm_data_0:
+      if (c == '{') {
+        putc(c, stderr);
+        fsm = fsm_dump;
+        break;
+      }
+      chk(c, 'd');
+      fsm++;
+      break;
     case fsm_data_1: chk(c, 'a'); fsm++; break;
     case fsm_data_2: chk(c, 't'); fsm++; break;
     case fsm_data_3: chk(c, 'a'); fsm++; break;

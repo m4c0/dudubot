@@ -8,6 +8,8 @@ const char * crl_host;
 const char * crl_tkn;
 
 void crl_fetch() {
+  rdr_init();
+
   CURL * curl = curl_easy_init();
   assert(curl);
 

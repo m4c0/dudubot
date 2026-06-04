@@ -5,11 +5,14 @@
 
 typedef size_t (*crl_fn_t)(char * data, size_t sz, size_t n, void * ptr);
 
-void crl_fetch(const char * host, const char * tkn, crl_fn_t rd, crl_fn_t wr) {
+const char * crl_host;
+const char * crl_tkn;
+
+void crl_fetch(crl_fn_t rd, crl_fn_t wr) {
   CURL * curl = curl_easy_init();
   assert(curl);
 
-  char url[10240]; snprintf(url, sizeof(url), "https://%s/v1/chat/completions", host);
+  char url[10240]; snprintf(url, sizeof(url), "https://%s/v1/chat/completions", crl_host);
 
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_POST, 1L);
@@ -18,7 +21,7 @@ void crl_fetch(const char * host, const char * tkn, crl_fn_t rd, crl_fn_t wr) {
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
   char auth[10240];
-  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", tkn);
+  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", crl_tkn);
 
   struct curl_slist * hdrs = NULL;
   hdrs = curl_slist_append(hdrs, "Content-type: application/json");

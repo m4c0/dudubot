@@ -236,6 +236,8 @@ int main(int argc, char ** argv) {
     return 1;
   }
 
-  crl_fetch(argv[1], argv[2], rd, wr);
+  crl_host = argv[1];
+  crl_tkn = argv[2];
+  crl_fetch(rd, wr);
 }
 

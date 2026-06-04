@@ -1,14 +1,13 @@
 #ifndef CRL_H
 #define CRL_H
 
-#include <curl/curl.h>
-
-typedef size_t (*crl_fn_t)(char * data, size_t sz, size_t n, void * ptr);
+#include "rdr.h"
+#include "wrt.h"
 
 const char * crl_host;
 const char * crl_tkn;
 
-void crl_fetch(crl_fn_t rd, crl_fn_t wr) {
+void crl_fetch() {
   CURL * curl = curl_easy_init();
   assert(curl);
 
@@ -16,8 +15,8 @@ void crl_fetch(crl_fn_t rd, crl_fn_t wr) {
 
   curl_easy_setopt(curl, CURLOPT_URL, url);
   curl_easy_setopt(curl, CURLOPT_POST, 1L);
-  curl_easy_setopt(curl, CURLOPT_READFUNCTION, rd);
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wr);
+  curl_easy_setopt(curl, CURLOPT_READFUNCTION, rdr_fn);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wrt_fn);
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
   char auth[10240];

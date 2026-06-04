@@ -57,25 +57,27 @@ static void process_json() {
 
   arr = to_arr(find_element(obj, "tool_calls"));
   if (arr) {
-    fprintf(stderr, "\nTOOL CALLS\n");
     while (arr) {
       json_object_t * obj = json_value_as_object(arr->value);
       assert(obj && "Tool calls must be an object");
 
+      int idx = atoi(json_value_as_number(find_element(obj, "index"))->number);
+      assert(idx >= 0 && idx < 10);
+      msg_tool_call_t * call = wrt_msg->calls + idx;
+      if (!call->name) call->name = malloc(1024);
+      if (!call->args) call->args = malloc(1024);
+
       const char * id = to_str(find_element(obj, "id"));
-      assert(id && "Expecting an ID for a tool call");
+      if (id) call->id = strdup(id);
 
       json_object_t * fn = json_value_as_object(find_element(obj, "function"));
-      assert(fn && "Expecting 'function' as a tool call");
+      if (fn) {
+        const char * name = to_str(find_element(fn, "name"));
+        if (name) strncat(call->name, name, 1024);
 
-      const char * name = to_str(find_element(fn, "name"));
-      assert(name && "Expecting a name for a tool call");
-
-      const char * args = to_str(find_element(fn, "arguments"));
-      assert(args && "Expecting arguments for a tool call");
-
-      fprintf(stderr, "  %s\n", id);
-      fprintf(stderr, "  => %s with %s\n", name, args);
+        const char * args = to_str(find_element(fn, "arguments"));
+        if (args) strncat(call->args, args, 1024);
+      }
       arr = arr->next;
     }
   }
@@ -87,6 +89,8 @@ static void process_json() {
       rsn = rsn_reasoning;
     }
     fprintf(stderr, "%s", str);
+    if (!wrt_msg->reas) wrt_msg->reas = malloc(10240);
+    strncat(wrt_msg->reas, str, 10240);
     free(root);
     return;
   }
@@ -98,6 +102,8 @@ static void process_json() {
       rsn = rsn_output;
     }
     fprintf(stderr, "%s", str);
+    if (!wrt_msg->cont) wrt_msg->cont = malloc(10240);
+    strncat(wrt_msg->cont, str, 10240);
     free(root);
     return;
   }

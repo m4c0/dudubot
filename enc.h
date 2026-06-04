@@ -115,9 +115,10 @@ void enc_reset() {
         enc_sb_cat(",");
       }
 
-      if (m->call) enc_sb_cat_kv_comma("tool_call_id", m->call);
-      if (m->name) enc_sb_cat_kv_comma("name",         m->name);
-      if (m->cont) enc_sb_cat_kv_comma("content",      m->cont);
+      if (m->call) enc_sb_cat_kv_comma("tool_call_id",      m->call);
+      if (m->name) enc_sb_cat_kv_comma("name",              m->name);
+      if (m->cont) enc_sb_cat_kv_comma("content",           m->cont);
+      if (m->reas) enc_sb_cat_kv_comma("reasoning_content", m->reas);
       enc_sb_cat_kv("role", m->role);
     }
     enc_sb_cat("}");

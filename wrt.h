@@ -2,9 +2,11 @@
 #define WRT_H
 
 #include "json.h"
+#include "msg.h"
 
 static char json_buf[10240];
 static char * json_ptr;
+static msg_t * wrt_msg;
 
 static struct json_value_s * find_element(struct json_object_s * obj, const char * el) {
   struct json_object_element_s * it = obj->start;
@@ -173,6 +175,14 @@ static void pump(char c) {
 size_t wrt_fn(char * data, size_t sz, size_t n, void * ptr) {
   for (int i = 0; i < sz * n; i++) pump(data[i]);
   return n;
+}
+
+void wrt_reset() {
+  for (wrt_msg = msg_convo; wrt_msg->role; wrt_msg++) {}
+
+  wrt_msg->role = "assistant";
+
+  fsm = fsm_data_0;
 }
 
 #endif

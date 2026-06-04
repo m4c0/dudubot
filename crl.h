@@ -9,6 +9,7 @@ const char * crl_tkn;
 
 void crl_fetch() {
   rdr_reset();
+  wrt_reset();
 
   CURL * curl = curl_easy_init();
   assert(curl);

@@ -29,6 +29,20 @@ static const char * to_str(struct json_value_s * v) {
   return str ? str->string : NULL;
 }
 
+static void wrt_esccat(char * dst, const char * src, int n) {
+  int len = strlen(dst);
+  dst += len;
+  n -= len;
+
+  for (; *src && n > 0; n--, src++, dst++) {
+    switch (*src) {
+      case '"':  *dst++ = '\\'; *dst = '"'; n--; break;
+      case '\n': *dst++ = '\\'; *dst = 'n'; n--; break;
+      default:   *dst = *src; break;
+    }
+  }
+}
+
 enum {
   rsn_start,
   rsn_reasoning,
@@ -73,10 +87,10 @@ static void process_json() {
       json_object_t * fn = json_value_as_object(find_element(obj, "function"));
       if (fn) {
         const char * name = to_str(find_element(fn, "name"));
-        if (name) strncat(call->name, name, 1024);
+        if (name) wrt_esccat(call->name, name, 1024);
 
         const char * args = to_str(find_element(fn, "arguments"));
-        if (args) strncat(call->args, args, 1024);
+        if (args) wrt_esccat(call->args, args, 1024);
       }
       arr = arr->next;
     }
@@ -90,7 +104,7 @@ static void process_json() {
     }
     fprintf(stderr, "%s", str);
     if (!wrt_msg->reas) wrt_msg->reas = malloc(10240);
-    strncat(wrt_msg->reas, str, 10240);
+    wrt_esccat(wrt_msg->reas, str, 10240);
     free(root);
     return;
   }
@@ -103,12 +117,11 @@ static void process_json() {
     }
     fprintf(stderr, "%s", str);
     if (!wrt_msg->cont) wrt_msg->cont = malloc(10240);
-    strncat(wrt_msg->cont, str, 10240);
+    wrt_esccat(wrt_msg->cont, str, 10240);
     free(root);
     return;
   }
 
-  fprintf(stderr, "\nunknown delta\n");
   free(root);
 }
 

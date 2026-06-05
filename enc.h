@@ -9,8 +9,7 @@ char * enc_ptr;
 char * enc_end;
 
 void enc_sb_cat(const char * str) {
-  strncat(enc_ptr, str, enc_end - enc_ptr);
-  enc_ptr += strlen(str);
+  for (; *str && enc_end > enc_ptr + 1; str++, enc_ptr++) *enc_ptr = *str;
 }
 void enc_sb_cat_str(const char * str) {
   enc_sb_cat("\"");

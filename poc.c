@@ -27,6 +27,9 @@ int main(int argc, char ** argv) {
       tll_t * t = tll_find(c->name);
       assert(t && "tool not found"); // discard message and try again?
 
+      ttl_args_t args = {0};
+      ttl_parse_args(t, c->args, &args);
+
       printf("%s %s %s %s\n", c->id, c->name, c->args, t->desc);
     }
     return 1;

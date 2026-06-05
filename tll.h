@@ -1,6 +1,15 @@
 #ifndef TLL_H
 #define TLL_H
 
+#include "json.h"
+
+typedef struct tll_arg_s {
+  char * name;
+  char * value;
+} ttl_arg_t;
+typedef struct tll_args_s {
+  ttl_arg_t list[10];
+} ttl_args_t;
 typedef struct tll_prop_s {
   const char * name;
   const char * type;
@@ -33,6 +42,13 @@ tll_t * tll_find(const char * name) {
     return t;
   }
   return NULL;
+}
+
+void ttl_parse_args(tll_t * t, const char * str, ttl_args_t * args) {
+  for (int i = 0; i < 10; i++) {
+    if (args->list[i].name ) free(args->list[i].name );
+    if (args->list[i].value) free(args->list[i].value);
+  }
 }
 
 #endif

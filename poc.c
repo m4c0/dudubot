@@ -15,5 +15,21 @@ int main(int argc, char ** argv) {
   crl_host = argv[1];
   crl_tkn = argv[2];
   crl_fetch();
+
+  const char * fini = wrt_msg->fini;
+
+  if (!fini) {
+    fputs("LLM ended without a concrete finish reason", stderr);
+    return 1;
+  }
+  if (0 == strcmp(fini, "tool_calls")) {
+    for (msg_tool_call_t * c = wrt_msg->calls; c->id; c++) {
+      tll_t * t = tll_find(c->name);
+      printf("%s %s %s %s\n", c->id, c->name, c->args, t->desc);
+    }
+    return 1;
+  }
+
+  crl_fetch();
 }
 

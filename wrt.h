@@ -61,6 +61,7 @@ static void process_json() {
 
   const char * str = to_str(find_element(obj, "finish_reason"));
   if (str) {
+    wrt_msg->fini = strdup(str);
     fprintf(stderr, "\nfinish reason: %s\n", str);
     free(root);
     return;

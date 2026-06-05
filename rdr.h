@@ -14,9 +14,11 @@ static size_t rdr_fn(char * data, size_t sz, size_t n, void * ptr) {
 
 void rdr_reset() {
   enc_reset();
-
   rdr_ptr = enc_txt;
+
+  puts("");
   puts(rdr_ptr);
+  puts("");
 }
 
 #endif

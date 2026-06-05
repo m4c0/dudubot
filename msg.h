@@ -10,6 +10,7 @@ typedef struct msg_s {
   const char * role;
   const char * call;
   const char * name;
+  const char * fini;
   char * cont;
   char * reas;
   msg_tool_call_t calls[10];

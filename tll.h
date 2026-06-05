@@ -11,7 +11,6 @@ typedef struct tll_s {
   const char * desc;
   tll_prop_t props[10];
   const char * reqs[10];
-  char * json;
 } tll_t;
 
 tll_t tll_list[] = {
@@ -28,5 +27,13 @@ tll_t tll_list[] = {
   {}
 };
 
+tll_t * tll_find(const char * name) {
+  for (tll_t * t = tll_list; t->name; t++) {
+    if (0 != strcmp(name, t->name)) continue;
+    return t;
+  }
+  fprintf(stderr, "tool not found: %s\n", name);
+  exit(1);
+}
 
 #endif

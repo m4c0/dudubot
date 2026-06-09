@@ -8,6 +8,8 @@
 #include "jsn.h"
 
 static char * view_local_file(const char * path) {
+  fprintf(stderr, "view_local_file(%s)\n", path);
+
   if (0 == strcmp(path, ".")) {
     DIR * d = opendir(".");
     assert(d);
@@ -35,25 +37,53 @@ static char * view_local_file(const char * path) {
     closedir(d);
     return buf;
   }
-  return 0;
+
+  assert(*path != '/');
+  for (const char * c = path; *c; c++) assert(*c != '/');
+
+  FILE * f = fopen(path, "rb");
+  if (!f) return "Unknown file name";
+
+  fseek(f, 0, SEEK_END);
+  int sz = ftell(f);
+  char * buf = malloc(sz);
+  assert(buf);
+  fseek(f, 0, SEEK_SET);
+  assert(fread(buf, sz, 1, f));
+  fclose(f);
+
+  int esz = 1;
+  for (const char * c = buf; *c; c++) {
+    switch (*c) {
+      case '"':
+      case '\\':
+      case '\n': esz += 2; break;
+      default:   esz += 1; break;
+    }
+  }
+  char * enc = malloc(esz);
+  for (char * c = buf, * e = enc; *c; c++, e++) {
+    switch (*c) {
+      case '"':  *e++ = '\\'; *e = '"';  break;
+      case '\n': *e++ = '\\'; *e = 'n';  break;
+      case '\\': *e++ = '\\'; *e = '\\'; break;
+      default:   *e = *c; break;
+    }
+  }
+  enc[esz - 1] = 0;
+
+  free(buf);
+  return enc;
 }
 
-int main(int argc, char ** argv) {
-  if (argc != 3) {
-    fprintf(stderr, "Usage: %s <domain-name> <api-key>\n\n", *argv);
-    fprintf(stderr, "Example: %s litellm.mycompany.com \"$API_KEY\"\n\n", *argv);
-    return 1;
-  }
-
-  crl_host = argv[1];
-  crl_tkn = argv[2];
+static int cycle() {
   crl_fetch();
 
   const char * fini = wrt_msg->fini;
 
   if (!fini) {
     fputs("LLM ended without a concrete finish reason", stderr);
-    return 1;
+    return 0;
   }
   if (0 == strcmp(fini, "tool_calls")) {
     msg_t * tool = wrt_msg + 1;
@@ -78,8 +108,22 @@ int main(int argc, char ** argv) {
         .cont = view_local_file(path),
       };
     }
+    return 1;
+  } else {
+    fprintf(stderr, "finish reason = %s\n", fini);
+    return 0;
+  }
+}
+
+int main(int argc, char ** argv) {
+  if (argc != 3) {
+    fprintf(stderr, "Usage: %s <domain-name> <api-key>\n\n", *argv);
+    fprintf(stderr, "Example: %s litellm.mycompany.com \"$API_KEY\"\n\n", *argv);
+    return 1;
   }
 
-  crl_fetch();
+  crl_host = argv[1];
+  crl_tkn = argv[2];
+  while (cycle()) {}
 }
 

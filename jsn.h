@@ -23,4 +23,16 @@ static const char * jsn_str(json_value_t * v) {
   return str ? str->string : NULL;
 }
 
+static void jsn_decode(char * str) {
+  char * w = str;
+  for (char * r = str; *r; r++, w++) {
+    if (*r == '\\') {
+      assert(r[1] != 'u');
+      w--;
+      continue;
+    }
+    if (w != r) *w = *r;
+  }
+  *w = 0;
+}
 #endif

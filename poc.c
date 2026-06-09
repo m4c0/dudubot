@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "crl.h"
+#include "jsn.h"
 
 int main(int argc, char ** argv) {
   if (argc != 3) {
@@ -23,20 +24,29 @@ int main(int argc, char ** argv) {
     return 1;
   }
   if (0 == strcmp(fini, "tool_calls")) {
+    msg_t * tool = wrt_msg + 1;
     for (msg_tool_call_t * c = wrt_msg->calls; c->id; c++) {
       tll_t * t = tll_find(c->name);
       assert(t && "tool not found"); // discard message and try again?
 
-      ttl_args_t args = {0};
-      int argc = ttl_parse_args(t, c->args, &args);
+      assert(0 == strcmp(c->name, "view_local_file"));
 
-      for (int i = 0; i < argc; i++) {
-        printf("%s %s\n", args.list[i].name, args.list[i].value);
-      }
+      jsn_decode(c->args);
 
-      printf("%s %s %s %s\n", c->id, c->name, c->args, t->desc);
+      json_object_t * root = jsn_parse_object(c->args, strlen(c->args));
+      assert(root && "invalid tool call args");
+
+      const char * path = jsn_str(jsn_find_element(root, "path"));
+      assert(path && "missing 'path' in 'view_local_file' arguments");
+
+      assert(0 == strcmp(path, "."));
+      *tool++ = (msg_t) {
+        .role = "tool",
+        .call = strdup(c->id),
+        .name = "view_local_file",
+        .cont = "main.c\\nmicroui.h",
+      };
     }
-    return 1;
   }
 
   crl_fetch();

@@ -85,7 +85,7 @@ static int cycle() {
   }
   if (0 == strcmp(fini, "tool_calls")) {
     msg_t * tool = wrt_msg + 1;
-    for (msg_tool_call_t * c = wrt_msg->calls; c->id; c++) {
+    for (msg_tool_call_t * c = wrt_msg->calls; c && c->id; c++) {
       tll_t * t = tll_find(c->name);
       assert(t && "tool not found"); // discard message and try again?
 

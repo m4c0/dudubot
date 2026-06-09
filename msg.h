@@ -13,7 +13,7 @@ typedef struct msg_s {
   const char * fini;
   char * cont;
   char * reas;
-  msg_tool_call_t calls[10];
+  msg_tool_call_t * calls;
 } msg_t;
 
 msg_t msg_convo[10000] = {

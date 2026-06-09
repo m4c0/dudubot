@@ -92,7 +92,7 @@ void enc_reset() {
   for (msg_t * m = msg_convo; m->role; m++) {
     if (m != msg_convo) enc_sb_cat(",");
     enc_sb_cat("{"); {
-      if (m->calls->id) {
+      if (m->calls) {
         enc_sb_cat_k("tool_calls");
         enc_sb_cat("["); {
           for (msg_tool_call_t * c = m->calls; c->name; c++) {

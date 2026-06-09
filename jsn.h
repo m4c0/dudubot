@@ -2,6 +2,7 @@
 #define JSN_H
 #include "json.h"
 
+static char *         jsn_last_decoded;
 static json_value_t * jsn_last_root;
 
 static json_object_t * jsn_parse_object(const char * str, int len) {
@@ -23,8 +24,11 @@ static const char * jsn_str(json_value_t * v) {
   return str ? str->string : NULL;
 }
 
-static void jsn_decode(char * str) {
-  char * w = str;
+static char * jsn_decode(char * str) {
+  if (jsn_last_decoded) free(jsn_last_decoded);
+
+  char * res = jsn_last_decoded = strdup(str);
+  char * w = res;
   for (char * r = str; *r; r++, w++) {
     if (*r == '\\') {
       assert(r[1] != 'u');
@@ -34,5 +38,6 @@ static void jsn_decode(char * str) {
     if (w != r) *w = *r;
   }
   *w = 0;
+  return res;
 }
 #endif

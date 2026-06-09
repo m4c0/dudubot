@@ -31,9 +31,9 @@ int main(int argc, char ** argv) {
 
       assert(0 == strcmp(c->name, "view_local_file"));
 
-      jsn_decode(c->args);
+      char * json = jsn_decode(c->args);
 
-      json_object_t * root = jsn_parse_object(c->args, strlen(c->args));
+      json_object_t * root = jsn_parse_object(json, strlen(json));
       assert(root && "invalid tool call args");
 
       const char * path = jsn_str(jsn_find_element(root, "path"));

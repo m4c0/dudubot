@@ -22,7 +22,6 @@ static char * view_local_file(const char * path) {
       if (ent->d_name[0] == '.') continue;
       len += ent->d_namlen + 2; // slash+n
     }
-    printf("%d\n", len);
 
     char * buf = malloc(len + 1); // null-terminator
     buf[0] = 0;
@@ -32,7 +31,6 @@ static char * view_local_file(const char * path) {
       if (*buf) strlcat(buf, "\\n", len + 1);
       strlcat(buf, ent->d_name, len + 1);
     }
-    printf("%s\n", buf);
 
     closedir(d);
     return buf;

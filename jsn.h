@@ -8,7 +8,7 @@ static json_value_t * jsn_last_root;
 static json_object_t * jsn_parse_object(const char * str, int len) {
   if (jsn_last_root) free(jsn_last_root);
 
-  json_value_t * root = json_parse(str, strlen(str));
+  json_value_t * root = jsn_last_root = json_parse(str, strlen(str));
   return root ? json_value_as_object(root) : NULL;
 }
 

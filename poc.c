@@ -1,6 +1,3 @@
-#include "sqlite3.c"
-#undef NDEBUG
-
 #include <assert.h>
 #include <curl/curl.h>
 #include <dirent.h>

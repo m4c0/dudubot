@@ -56,7 +56,7 @@ static void process_json() {
 
   arr = to_arr(jsn_find_element(obj, "tool_calls"));
   if (arr) {
-    wrt_msg->calls = calloc(sizeof(msg_tool_call_t), 100);
+    if (!wrt_msg->calls) wrt_msg->calls = calloc(sizeof(msg_tool_call_t), 100);
     while (arr) {
       json_object_t * obj = json_value_as_object(arr->value);
       assert(obj && "Tool calls must be an object");

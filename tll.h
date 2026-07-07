@@ -1,6 +1,8 @@
 #ifndef TLL_H
 #define TLL_H
 
+#include "tll_view_local_file.h"
+
 typedef struct tll_prop_s {
   const char * name;
   const char * type;
@@ -9,6 +11,7 @@ typedef struct tll_prop_s {
 typedef struct tll_s {
   const char * name;
   const char * desc;
+  char * (*func)(char *);
   tll_prop_t props[10];
   const char * reqs[10];
 } tll_t;
@@ -17,6 +20,7 @@ tll_t tll_list[] = {
   {
     .name = "view_local_file",
     .desc = "Reads the text contents of a file relative to the workspace directory.",
+    .func = tll_view_local_file,
     .reqs = { "path" },
     .props = {{
       .name = "path",

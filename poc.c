@@ -7,73 +7,6 @@
 #include "crl.h"
 #include "jsn.h"
 
-static char * view_local_file(const char * path) {
-  fprintf(stderr, "view_local_file(%s)\n", path);
-
-  if (0 == strcmp(path, ".")) {
-    DIR * d = opendir(".");
-    assert(d);
-
-    long dt = telldir(d);
-
-    int len = 0;
-    struct dirent * ent;
-    while ((ent = readdir(d))) {
-      if (ent->d_name[0] == '.') continue;
-      len += ent->d_namlen + 2; // slash+n
-    }
-
-    char * buf = malloc(len + 1); // null-terminator
-    buf[0] = 0;
-    seekdir(d, dt);
-    while ((ent = readdir(d))) {
-      if (ent->d_name[0] == '.') continue;
-      if (*buf) strlcat(buf, "\\n", len + 1);
-      strlcat(buf, ent->d_name, len + 1);
-    }
-
-    closedir(d);
-    return buf;
-  }
-
-  assert(*path != '/');
-  for (const char * c = path; *c; c++) assert(*c != '/');
-
-  FILE * f = fopen(path, "rb");
-  if (!f) return "Unknown file name";
-
-  fseek(f, 0, SEEK_END);
-  int sz = ftell(f);
-  char * buf = malloc(sz);
-  assert(buf);
-  fseek(f, 0, SEEK_SET);
-  assert(fread(buf, sz, 1, f));
-  fclose(f);
-
-  int esz = 1;
-  for (const char * c = buf; *c; c++) {
-    switch (*c) {
-      case '"':
-      case '\\':
-      case '\n': esz += 2; break;
-      default:   esz += 1; break;
-    }
-  }
-  char * enc = malloc(esz);
-  for (char * c = buf, * e = enc; *c; c++, e++) {
-    switch (*c) {
-      case '"':  *e++ = '\\'; *e = '"';  break;
-      case '\n': *e++ = '\\'; *e = 'n';  break;
-      case '\\': *e++ = '\\'; *e = '\\'; break;
-      default:   *e = *c; break;
-    }
-  }
-  enc[esz - 1] = 0;
-
-  free(buf);
-  return enc;
-}
-
 static int read_msg(msg_t * msg) {
   printf("> "); fflush(stdout);
 
@@ -117,21 +50,11 @@ static int cycle() {
       tll_t * t = tll_find(c->name);
       assert(t && "tool not found"); // discard message and try again?
 
-      assert(0 == strcmp(c->name, "view_local_file"));
-
-      char * json = jsn_decode(c->args);
-
-      json_object_t * root = jsn_parse_object(json, strlen(json));
-      assert(root && "invalid tool call args");
-
-      const char * path = jsn_str(jsn_find_element(root, "path"));
-      assert(path && "missing 'path' in 'view_local_file' arguments");
-
       *tool++ = (msg_t) {
         .role = "tool",
         .call = strdup(c->id),
-        .name = "view_local_file",
-        .cont = view_local_file(path),
+        .name = strdup(c->name),
+        .cont = t->func(c->args),
       };
     }
     return 1;

@@ -16,11 +16,6 @@ typedef struct msg_s {
   msg_tool_call_t * calls;
 } msg_t;
 
-msg_t msg_convo[10000] = {
-  {
-    .role = "user",
-    .cont = "I want to find dead code in the current repository",
-  }
-};
+msg_t msg_convo[10000] = {0};
 
 #endif

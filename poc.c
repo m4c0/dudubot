@@ -74,6 +74,18 @@ static char * view_local_file(const char * path) {
   return enc;
 }
 
+static int read_msg(msg_t * msg) {
+  printf("> ");
+  fflush(stdout);
+
+  char buf[1024];
+  if (!fgets(buf, 1024, stdin)) return 1;
+
+  msg->role = "user";
+  msg->cont = calloc(1024, 1);
+  wrt_esccat(msg->cont, buf, 1024);
+  return 0;
+}
 static int cycle() {
   crl_fetch();
 
@@ -82,6 +94,10 @@ static int cycle() {
   if (!fini) {
     fputs("LLM ended without a concrete finish reason", stderr);
     return 0;
+  }
+  if (0 == strcmp(fini, "stop")) {
+    if (read_msg(wrt_msg + 1)) return 0;
+    return 1;
   }
   if (0 == strcmp(fini, "tool_calls")) {
     msg_t * tool = wrt_msg + 1;
@@ -122,5 +138,6 @@ int main(int argc, char ** argv) {
 
   crl_host = argv[1];
   crl_tkn = argv[2];
+  read_msg(msg_convo);
   while (cycle()) {}
 }

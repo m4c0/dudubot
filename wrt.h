@@ -63,8 +63,8 @@ static void process_json() {
       int idx = atoi(json_value_as_number(jsn_find_element(obj, "index"))->number);
       assert(idx >= 0 && idx < 100);
       msg_tool_call_t * call = wrt_msg->calls + idx;
-      if (!call->name) call->name = malloc(1024);
-      if (!call->args) call->args = malloc(1024);
+      if (!call->name) call->name = calloc(1024, 1);
+      if (!call->args) call->args = calloc(1024, 1);
 
       const char * id = jsn_str(jsn_find_element(obj, "id"));
       if (id) call->id = strdup(id);
@@ -88,8 +88,8 @@ static void process_json() {
       rsn = rsn_reasoning;
     }
     fprintf(stderr, "%s", str);
-    if (!wrt_msg->reas) wrt_msg->reas = malloc(10240);
-    wrt_esccat(wrt_msg->reas, str, 10240);
+    if (!wrt_msg->reas) wrt_msg->reas = calloc(102400, 1);
+    wrt_esccat(wrt_msg->reas, str, 102400);
     return;
   }
 

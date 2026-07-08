@@ -1,2 +1,3 @@
-# poc-litellm
-Making calls to Lite LLM using C
+# dudubot
+
+My own LLM bot using C, intended to use with DeepSeek.

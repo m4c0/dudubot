@@ -18,4 +18,14 @@ typedef struct msg_s {
 
 msg_t msg_convo[10000] = {0};
 
+int msg_save(const char * name) {
+  printf("would save in %s\n", name);
+  return 0;
+}
+int msg_load(const char * name) {
+  printf("would load from %s\n", name);
+  return 0;
+}
+
+
 #endif

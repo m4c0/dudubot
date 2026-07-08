@@ -12,8 +12,18 @@ static int read_msg(msg_t * msg) {
 
   char buf[10240];
   if (!fgets(buf, 10240, stdin)) return 1;
+  buf[strlen(buf) - 1] = 0;
 
-  if (0 == strcmp(buf, "a\n")) {
+  if (0 == strncmp(buf, "load ", 5)) {
+    if (msg_load(buf + 5)) printf("failed to load messages\n");
+    return read_msg(msg);
+  }
+  if (0 == strncmp(buf, "save ", 5)) {
+    if (msg_save(buf + 5)) printf("failed to save messages\n");
+    return read_msg(msg);
+  }
+
+  if (0 == strcmp(buf, "a")) {
     char line[1024];
     char * ptr = buf;
     while (1) {

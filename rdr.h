@@ -15,11 +15,6 @@ static size_t rdr_fn(char * data, size_t sz, size_t n, void * ptr) {
 void rdr_reset() {
   enc_reset();
   rdr_ptr = enc_txt;
-  // TODO: save enc_txt
-
-  // FILE * f = fopen("/tmp/litellm.json", "wb");
-  // fwrite(enc_txt, strlen(enc_txt), 1, f);
-  // fclose(f);
 }
 
 #endif

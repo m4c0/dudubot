@@ -37,7 +37,7 @@ void enc_reset() {
   enc_ptr = enc_txt;
 
   enc_sb_cat("{");
-  enc_sb_cat_kv_comma("model", "deepseek-v4-pro");
+  enc_sb_cat_kv_comma("model", "deepseek-v4-flash");
   enc_sb_cat_k("stream");     enc_sb_cat("true");  enc_sb_cat(",");
   enc_sb_cat_k("max_tokens"); enc_sb_cat("10240"); enc_sb_cat(",");
   enc_sb_cat_k("tools");

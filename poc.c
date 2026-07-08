@@ -82,14 +82,6 @@ void save_last_session(void) {
 }
 
 int main(int argc, char ** argv) {
-  if (argc != 3) {
-    fprintf(stderr, "Usage: %s <domain-name> <api-key>\n\n", *argv);
-    fprintf(stderr, "Example: %s litellm.mycompany.com \"$API_KEY\"\n\n", *argv);
-    return 1;
-  }
-
-  crl_host = argv[1];
-  crl_tkn = argv[2];
   if (read_msg()) return 0;
 
   atexit(save_last_session);

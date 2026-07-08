@@ -13,10 +13,24 @@ static json_array_element_t * to_arr(json_value_t * v) {
   return arr ? arr->start : NULL;
 }
 
+static int wrt_esclen(const char * src) {
+  int n = 0;
+  for (; *src; src++, n++) {
+    switch (*src) {
+      case '"':  n++; break;
+      case '\\': n++; break;
+      case '\n': n++; break;
+    }
+  }
+  return n;
+}
 static void wrt_esccat(char * dst, const char * src, int n) {
   int len = strlen(dst);
   dst += len;
   n -= len;
+
+  int sln = wrt_esclen(src);
+  assert(sln < n);
 
   for (; *src && n > 0; n--, src++, dst++) {
     switch (*src) {

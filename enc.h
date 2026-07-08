@@ -89,8 +89,8 @@ void enc_reset() {
   enc_sb_cat_k("messages");
   enc_sb_cat("[");
 
-  for (msg_t * m = msg_convo; m->role; m++) {
-    if (m != msg_convo) enc_sb_cat(",");
+  for (msg_t * m = msg_head; m; m = m->next) {
+    if (m != msg_head) enc_sb_cat(",");
     enc_sb_cat("{"); {
       if (m->calls) {
         enc_sb_cat_k("tool_calls");

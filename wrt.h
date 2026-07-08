@@ -190,8 +190,7 @@ size_t wrt_fn(char * data, size_t sz, size_t n, void * ptr) {
 }
 
 void wrt_reset() {
-  for (wrt_msg = msg_convo; wrt_msg->role; wrt_msg++) {}
-
+  wrt_msg = msg_alloc();
   wrt_msg->role = "assistant";
 
   fsm = fsm_data_0;

@@ -108,19 +108,17 @@ int msg_load(const char * name, int purge) {
     if (strncmp(buf, "calls ", 6) == 0) {
       if (!t) m->calls = t = calloc(sizeof(msg_tool_call_t), 10);
 
-      tln = 102400;
-      tgt = t->args = calloc(tln, 1);
-
       char * id = buf + 6;
 
       char * name = strchr(id, ' ');
       assert(name);
       *name++ = 0;
 
-      *t++ = (msg_tool_call_t) {
-        .id = strdup(id),
-        .name = strdup(name),
-      };
+      t->id = strdup(id);
+      t->name = strdup(name);
+
+      tln = 102400;
+      tgt = t->args = calloc(tln, 1);
       continue;
     }
 

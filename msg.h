@@ -67,6 +67,9 @@ int msg_save(const char * name) {
       fprintf(f, "reas\n");
       msg_print_indented(f, m->reas);
     }
+    for (msg_tool_call_t * t = m->calls; t && t->id; t++) {
+      fprintf(f, "calls %s %s\n  %s\n.\n", t->id, t->name, t->args);
+    }
     fprintf(f, "\n");
   }
   fclose(f);
@@ -82,6 +85,7 @@ int msg_load(const char * name, int purge) {
 
   char buf[102400];
   msg_t * m = NULL;
+  msg_tool_call_t * t = NULL;
   char * tgt = NULL;
   unsigned tln = 0;
   while (fgets(buf, sizeof(buf), f)) {
@@ -90,6 +94,7 @@ int msg_load(const char * name, int purge) {
     if (strncmp(buf, "role ", 5) == 0) {
       m = msg_alloc();
       m->role = strdup(buf + 5);
+      t = NULL;
       tgt = NULL;
       continue;
     }
@@ -99,6 +104,25 @@ int msg_load(const char * name, int purge) {
 
     if (strcmp(buf, "cont") == 0) { tln = 102400; tgt = m->cont = calloc(tln, 1); continue; }
     if (strcmp(buf, "reas") == 0) { tln = 102400; tgt = m->reas = calloc(tln, 1); continue; }
+
+    if (strncmp(buf, "calls ", 6) == 0) {
+      if (!t) m->calls = t = calloc(sizeof(msg_tool_call_t), 10);
+
+      tln = 102400;
+      tgt = t->args = calloc(tln, 1);
+
+      char * id = buf + 6;
+
+      char * name = strchr(id, ' ');
+      assert(name);
+      *name++ = 0;
+
+      *t++ = (msg_tool_call_t) {
+        .id = strdup(id),
+        .name = strdup(name),
+      };
+      continue;
+    }
 
     if (!tgt) {
       if (strlen(buf) == 0) continue; // ignore empty line outside multilines

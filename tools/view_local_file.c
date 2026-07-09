@@ -1,4 +1,5 @@
 #include "../jsn.h"
+#include "../str.h"
 #include "../tll_data.h"
 
 #include <dirent.h>
@@ -21,26 +22,16 @@ static const char * exec(const char * args) {
     DIR * d = opendir(".");
     if (!d) return "listing files is not available. Try something else";
 
-    long dt = telldir(d);
+    str_bld_t * str;
 
-    int len = 0;
     struct dirent * ent;
     while ((ent = readdir(d))) {
       if (ent->d_name[0] == '.') continue;
-      len += ent->d_namlen + 2; // slash+n
-    }
-
-    char * buf = malloc(len + 1); // null-terminator
-    buf[0] = 0;
-    seekdir(d, dt);
-    while ((ent = readdir(d))) {
-      if (ent->d_name[0] == '.') continue;
-      if (*buf) strlcat(buf, "\n", len + 1);
-      strlcat(buf, ent->d_name, len + 1);
+      str_bld_cat(&str, ent->d_name);
     }
 
     closedir(d);
-    return buf;
+    return str_bld_flush(&str);
   }
 
   if (*path == '/' || *path == '\\')

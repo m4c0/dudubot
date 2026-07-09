@@ -30,7 +30,7 @@ int tll_load(const char * name) {
   // TODO: load relative to executable
   // TODO: handle extensions etc based on OS
   char buf[1024];
-  snprintf(buf, sizeof(buf), "./lib%s.dylib", name);
+  snprintf(buf, sizeof(buf), "@rpath/lib%s.dylib", name);
 
   void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);
   if (!dl) {

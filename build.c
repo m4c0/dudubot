@@ -30,7 +30,7 @@ static int run(char ** args) {
 #endif
 
 int main() {
-  RUN("clang", "-g", "-o", "dudubot", "dudubot.c", "-lcurl");
+  RUN("clang", "-g", "-o", "dudubot", "dudubot.c", "-lcurl", "-rpath", "@executable_path");
 
   RUN("clang", "-shared", "-g", "-o", "libview_local_file."SO, "tools/view_local_file.c");
 

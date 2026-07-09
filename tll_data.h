@@ -13,6 +13,7 @@ typedef struct tll_s {
   tll_prop_t props[10];
   const char * reqs[10];
 
+  void * dl;
   struct tll_s * next;
 } tll_t;
 

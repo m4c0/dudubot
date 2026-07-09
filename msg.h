@@ -8,6 +8,8 @@ typedef struct msg_tool_call_s {
   const char * id;
   char * name;
   char * args;
+
+  struct msg_tool_call_s * next;
 } msg_tool_call_t;
 typedef struct msg_s {
   const char * role;
@@ -38,6 +40,14 @@ msg_t * msg_alloc() {
   msg_t * m = msg_head;
   while (m->next) m = m->next;
   return m->next = calloc(sizeof(msg_t), 1);
+}
+msg_tool_call_t * msg_alloc_call(msg_t * msg) {
+  if (msg->calls == NULL) {
+    return msg->calls = calloc(sizeof(msg_tool_call_t), 1);
+  }
+  msg_tool_call_t * m = msg->calls;
+  while (m->next) m = m->next;
+  return m->next = calloc(sizeof(msg_tool_call_t), 1);
 }
 
 void msg_print_indented(FILE * f, const char * txt) {
@@ -74,7 +84,7 @@ int msg_save(const char * name) {
       fprintf(f, "reas\n");
       msg_print_indented(f, m->reas);
     }
-    for (msg_tool_call_t * t = m->calls; t && t->id; t++) {
+    for (msg_tool_call_t * t = m->calls; t; t = t->next) {
       fprintf(f, "calls %s %s\n  %s\n.\n", t->id, t->name, t->args);
     }
     fprintf(f, "\n");
@@ -119,7 +129,7 @@ int msg_load(const char * name, int purge) {
     if (strcmp(buf, "reas") == 0) { tgt = &m->reas; continue; }
 
     if (strncmp(buf, "calls ", 6) == 0) {
-      if (!t) m->calls = t = calloc(sizeof(msg_tool_call_t), 10);
+      if (!t) t = msg_alloc_call(m);
 
       char * id = buf + 6;
 

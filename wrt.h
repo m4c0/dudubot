@@ -48,14 +48,20 @@ static void process_json() {
 
   arr = to_arr(jsn_find_element(obj, "tool_calls"));
   if (arr) {
-    if (!wrt_msg->calls) wrt_msg->calls = calloc(sizeof(msg_tool_call_t), 100);
     while (arr) {
       json_object_t * obj = json_value_as_object(arr->value);
       assert(obj && "Tool calls must be an object");
 
       int idx = atoi(json_value_as_number(jsn_find_element(obj, "index"))->number);
-      assert(idx >= 0 && idx < 100);
-      msg_tool_call_t * call = wrt_msg->calls + idx;
+
+      msg_tool_call_t * call = wrt_msg->calls;
+      for (int i = 0; i <= idx; i++, call = call->next) {
+        if (!call) call = msg_alloc_call(wrt_msg);
+      }
+
+      call = wrt_msg->calls;
+      for (int i = 0; i < idx; i++, call = call->next) {}
+
       if (!call->name) call->name = calloc(1024, 1);
       if (!call->args) call->args = calloc(1024, 1);
 

@@ -108,7 +108,7 @@ void enc_reset() {
       if (m->calls) {
         enc_sb_cat_k("tool_calls");
         enc_sb_cat("["); {
-          for (msg_tool_call_t * c = m->calls; c->name; c++) {
+          for (msg_tool_call_t * c = m->calls; c; c = c->next) {
             if (c != m->calls) enc_sb_cat(",");
             enc_sb_cat("{"); {
               enc_sb_cat_kv_comma("id", c->id);

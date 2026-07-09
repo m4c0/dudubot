@@ -86,10 +86,6 @@ static int cycle(void) {
   }
 }
 
-void save_last_session(void) {
-  msg_save("/tmp/dudubot.last_session");
-}
-
 int main(int argc, char ** argv) {
   for (int i = 1; i < argc; i++) {
     msg_load(argv[i], 0);
@@ -97,9 +93,8 @@ int main(int argc, char ** argv) {
 
   if (read_msg()) return 0;
 
-  atexit(save_last_session);
-
   while (cycle()) {}
 
+  msg_save("/tmp/dudubot_last_session");
   tll_purge();
 }

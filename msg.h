@@ -100,6 +100,7 @@ int msg_load(const char * name, int purge) {
     if (strncmp(buf, "tool ", 5) == 0) {
       assert(!msg_head && "tools can only be defined in an empty conversation");
       if (tll_load(buf + 5)) return 1;
+      continue;
     }
 
     if (strncmp(buf, "role ", 5) == 0) {

@@ -18,6 +18,14 @@ static int read_msg(void) {
 
   if (0 == strcmp(buf, ".")) return 0;
 
+  if (0 == strncmp(buf, "tool ", 5)) {
+    if (msg_head) {
+      printf("cannot change tools after conversation started\n");
+      return read_msg();
+    }
+    tll_load(buf + 5);
+    return read_msg();
+  }
   if (0 == strncmp(buf, "load ", 5)) {
     if (msg_load(buf + 5, 1)) printf("failed to load messages\n");
     return read_msg();

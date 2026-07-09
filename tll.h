@@ -47,10 +47,16 @@ void tll_load(const char * name) {
   snprintf(buf, sizeof(buf), "./lib%s.dylib", name);
 
   void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);
-  assert(dl && "invalid tool name");
+  if (!dl) {
+    fprintf(stderr, "could not load tool library named: %s\n", buf);
+    return;
+  }
 
   tll_fn_t fn = dlsym(dl, "dudubot_tool");
-  assert(fn && "tool library does not have 'dudubot_tool'");
+  if (!dl) {
+    fprintf(stderr, "tool library does not have 'dudubot_tool': %s\n", buf);
+    return;
+  }
 
   tll_t * t = tll_alloc();
   fn(t);

@@ -21,8 +21,18 @@ static int run(char ** args) {
 }
 #define RUN(...) do { char * args[] = { __VA_ARGS__, 0 }; if (run(args)) return 1; } while (0)
 
+#ifdef __APPLE__
+#  define SO "dylib"
+#elif _WIN32
+#  define SO "dll"
+#else
+#  define SO "so"
+#endif
+
 int main() {
-  RUN("clang", "-o", "dudubot", "dudubot.c", "-lcurl");
+  RUN("clang", "-g", "-o", "dudubot", "dudubot.c", "-lcurl");
+
+  RUN("clang", "-shared", "-g", "-o", "libview_local_file."SO, "tools/view_local_file.c");
 
   return 0;
 }

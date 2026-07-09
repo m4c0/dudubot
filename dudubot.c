@@ -91,4 +91,6 @@ int main(int argc, char ** argv) {
   atexit(save_last_session);
 
   while (cycle()) {}
+
+  tll_purge();
 }

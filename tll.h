@@ -1,7 +1,7 @@
 #ifndef TLL_H
 #define TLL_H
 
-#include <string.h>
+#include <dlfcn.h>
 
 typedef struct tll_prop_s {
   const char * name;
@@ -15,10 +15,51 @@ typedef struct tll_s {
   tll_prop_t props[10];
   const char * reqs[10];
 
+  void * dl;
   struct tll_s * next;
 } tll_t;
 
 tll_t * tll_head;
+
+void tll_purge() {
+  tll_t * m = tll_head;
+  while (m) {
+    tll_t * mm = m;
+    m = m->next;
+    dlclose(mm->dl);
+    free(mm);
+  }
+}
+tll_t * tll_alloc() {
+  if (tll_head == NULL) {
+    return tll_head = calloc(sizeof(tll_t), 1);
+  }
+  tll_t * m = tll_head;
+  while (m->next) m = m->next;
+  return m->next = calloc(sizeof(tll_t), 1);
+}
+
+typedef void (*tll_fn_t)(tll_t * t);
+void tll_load(const char * name) {
+  // TODO: load relative to executable
+  // TODO: handle extensions etc based on OS
+  char buf[1024];
+  snprintf(buf, sizeof(buf), "./lib%s.dylib", name);
+
+  void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);
+  assert(dl && "invalid tool name");
+
+  tll_fn_t fn = dlsym(dl, "dudubot_tool");
+  assert(fn && "tool library does not have 'dudubot_tool'");
+
+  tll_t * t = tll_alloc();
+  fn(t);
+
+  // paranoid standardisation
+  t->name = strdup(name);
+  t->dl = dl;
+  t->next = NULL;
+}
 
 tll_t * tll_find(const char * name) {
   for (tll_t * t = tll_head; t; t = t->next) {

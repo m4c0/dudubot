@@ -51,7 +51,7 @@ static int cycle(void) {
   const char * fini = wrt_msg->fini;
 
   if (!fini) {
-    fprintf(stderr, "LLM ended without a concrete finish reason\n");
+    fprintf(stderr, "\nLLM ended without a concrete finish reason\n");
     return 0;
   }
   if (0 == strcmp(fini, "stop")) {

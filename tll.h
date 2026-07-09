@@ -1,7 +1,7 @@
 #ifndef TLL_H
 #define TLL_H
 
-#include "tll_view_local_file.h"
+#include <string.h>
 
 typedef struct tll_prop_s {
   const char * name;
@@ -14,25 +14,14 @@ typedef struct tll_s {
   char * (*func)(char *);
   tll_prop_t props[10];
   const char * reqs[10];
+
+  struct tll_s * next;
 } tll_t;
 
-tll_t tll_list[] = {
-  {
-    .name = "view_local_file",
-    .desc = "Reads the text contents of a file relative to the workspace directory.",
-    .func = tll_view_local_file,
-    .reqs = { "path" },
-    .props = {{
-      .name = "path",
-      .type = "string",
-      .desc = "The relative file path to read (e.g. 'src/index.js')",
-    }},
-  },
-  {}
-};
+tll_t * tll_head;
 
 tll_t * tll_find(const char * name) {
-  for (tll_t * t = tll_list; t->name; t++) {
+  for (tll_t * t = tll_head; t; t = t->next) {
     if (0 != strcmp(name, t->name)) continue;
     return t;
   }

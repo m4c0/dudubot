@@ -56,8 +56,8 @@ void enc_reset() {
   enc_sb_cat_k("tools");
   enc_sb_cat("[");
 
-  for (tll_t * t = tll_list; t->name; t++) {
-    if (t != tll_list) enc_sb_cat(",");
+  for (tll_t * t = tll_head; t; t = t->next) {
+    if (t != tll_head) enc_sb_cat(",");
     enc_sb_cat("{"); {
       enc_sb_cat_kv_comma("type", "function");
       enc_sb_cat_k("function");

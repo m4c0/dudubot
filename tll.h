@@ -26,7 +26,7 @@ tll_t * tll_alloc() {
 }
 
 typedef void (*tll_fn_t)(tll_t * t);
-void tll_load(const char * name) {
+int tll_load(const char * name) {
   // TODO: load relative to executable
   // TODO: handle extensions etc based on OS
   char buf[1024];
@@ -35,13 +35,13 @@ void tll_load(const char * name) {
   void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);
   if (!dl) {
     fprintf(stderr, "could not load tool library named: %s\n", buf);
-    return;
+    return 1;
   }
 
   tll_fn_t fn = dlsym(dl, "dudubot_tool");
   if (!dl) {
     fprintf(stderr, "tool library does not have 'dudubot_tool': %s\n", buf);
-    return;
+    return 1;
   }
 
   tll_t * t = tll_alloc();
@@ -51,6 +51,7 @@ void tll_load(const char * name) {
   t->name = strdup(name);
   t->dl = dl;
   t->next = NULL;
+  return 0;
 }
 
 tll_t * tll_find(const char * name) {

@@ -1,6 +1,8 @@
 #ifndef MSG_H
 #define MSG_H
 
+#include "tll.h"
+
 typedef struct msg_tool_call_s {
   const char * id;
   char * name;
@@ -54,6 +56,10 @@ void msg_print_indented(FILE * f, const char * txt) {
 
 int msg_save(const char * name) {
   FILE * f = fopen(name, "wb");
+
+  for (tll_t * t = tll_head; t; t = t->next) fprintf(f, "tool %s\n", t->name);
+  if (tll_head) fprintf(f, "\n");
+
   for (msg_t * m = msg_head; m; m = m->next) {
     fprintf(f, "role %s\n", m->role);
     if (m->call) fprintf(f, "call %s\n", m->call);
@@ -90,6 +96,11 @@ int msg_load(const char * name, int purge) {
   unsigned tln = 0;
   while (fgets(buf, sizeof(buf), f)) {
     buf[strlen(buf) - 1] = 0;
+
+    if (strncmp(buf, "tool ", 5) == 0) {
+      assert(!msg_head && "tools can only be defined in an empty conversation");
+      if (tll_load(buf + 5)) return 1;
+    }
 
     if (strncmp(buf, "role ", 5) == 0) {
       m = msg_alloc();

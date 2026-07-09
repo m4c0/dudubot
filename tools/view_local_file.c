@@ -22,7 +22,7 @@ static const char * exec(const char * args) {
     DIR * d = opendir(".");
     if (!d) return "listing files is not available. Try something else";
 
-    str_bld_t * str;
+    str_bld_t * str = NULL;
 
     struct dirent * ent;
     while ((ent = readdir(d))) {
@@ -40,7 +40,7 @@ static const char * exec(const char * args) {
   char cwd[PATH_MAX];
   if (!getcwd(cwd, sizeof(cwd))) return "Tool failed to get CWD. Inform the user.";
   char real[PATH_MAX];
-  if (!realpath(path, real)) return "Tool failed to resolve file. Inform the user.";
+  if (!realpath(path, real)) return "Tool failed to resolve file.";
 
   if (0 != strncmp(cwd, real, strlen(cwd))) return "Access outside current directory is not permitted.";
 
@@ -49,12 +49,13 @@ static const char * exec(const char * args) {
 
   fseek(f, 0, SEEK_END);
   int sz = ftell(f);
-  char * buf = malloc(sz);
+  char * buf = malloc(sz + 1);
   assert(buf);
   fseek(f, 0, SEEK_SET);
   assert(fread(buf, sz, 1, f));
   fclose(f);
 
+  buf[sz] = 0;
   return buf;
 }
 

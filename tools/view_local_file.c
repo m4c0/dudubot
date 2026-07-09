@@ -33,7 +33,7 @@ static const char * exec(const char * args) {
     seekdir(d, dt);
     while ((ent = readdir(d))) {
       if (ent->d_name[0] == '.') continue;
-      if (*buf) strlcat(buf, "\\n", len + 1);
+      if (*buf) strlcat(buf, "\n", len + 1);
       strlcat(buf, ent->d_name, len + 1);
     }
 

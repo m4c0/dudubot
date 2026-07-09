@@ -189,6 +189,7 @@ void wrt_flush() {
       .name = str_bld_flush(wrt_call_name + i),
       .args = str_bld_flush(wrt_call_args + i),
     };
+    wrt_call_ids[i] = NULL;
   }
   wrt_msg->cont = str_bld_flush(&wrt_cont);
   wrt_msg->reas = str_bld_flush(&wrt_reas);

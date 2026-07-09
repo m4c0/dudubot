@@ -87,7 +87,7 @@ static int cycle(void) {
 }
 
 void save_last_session(void) {
-  msg_save("/tmp/last_session");
+  msg_save("/tmp/dudubot.last_session");
 }
 
 int main(int argc, char ** argv) {

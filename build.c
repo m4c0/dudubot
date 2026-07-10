@@ -29,10 +29,13 @@ static int run(char ** args) {
 #  define SO "so"
 #endif
 
+#define TOOL(X) RUN("clang", "-shared", "-g", "-o", "lib"X"."SO, "tools/"X".c")
+
 int main() {
   RUN("clang", "-g", "-o", "dudubot", "dudubot.c", "-lcurl", "-rpath", "@executable_path");
 
-  RUN("clang", "-shared", "-g", "-o", "libview_local_file."SO, "tools/view_local_file.c");
+  TOOL("find_local_file");
+  TOOL("view_local_file");
 
   return 0;
 }

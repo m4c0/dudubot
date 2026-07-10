@@ -1,0 +1,68 @@
+#include "../jsn.h"
+#include "../str.h"
+#include "../tll_data.h"
+
+#include <dirent.h>
+#include <limits.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+static void find(const char * path, const char * filename, str_bld_t ** out) {
+  DIR * dir = opendir(path);
+  if (!dir) return;
+
+  struct dirent * d;
+  while ((d = readdir(dir)) != NULL) {
+    if (d->d_name[0] == '.') continue;
+
+    char fullpath[PATH_MAX];
+    snprintf(fullpath, sizeof(fullpath), "%s/%s", path, d->d_name);
+
+    struct stat st;
+    if (stat(fullpath, &st) != 0) continue;
+
+    if (S_ISDIR(st.st_mode)) {
+      find(fullpath, filename, out);
+    } else if (strcmp(d->d_name, filename) == 0) {
+      str_bld_cat(out, fullpath + 2);
+      str_bld_cat(out, "\n");
+    }
+  }
+
+  closedir(dir);
+}
+
+static const char * exec(const char * args) {
+  char * json = jsn_decode(args);
+
+  json_object_t * root = jsn_parse_object(json, strlen(json));
+  assert(root && "invalid tool call args");
+
+  const char * filename = jsn_str(jsn_find_element(root, "filename"));
+  assert(filename && "missing 'filename' in 'find_local_file' arguments");
+
+  fprintf(stderr, "find_local_file(%s)\n", filename);
+
+  if (strchr(filename, '*')) return "Glob searching is not supported";
+
+  str_bld_t * str = NULL;
+  find(".", filename, &str);
+
+  return str ? str_bld_flush(&str) : "File not found";
+}
+
+void dudubot_tool(tll_t * t) {
+  *t = (tll_t) {
+    .desc =
+      "Finds the path of a file in the current repository given a filename. "
+      "Example: searching for 'MyCode.java' would be the semantically equivalent of 'find . -name MyCode.java'. ",
+    .func = exec,
+    .reqs = { "filename" },
+    .props = {{
+      .name = "filename",
+      .type = "string",
+      .desc = "Basename of the file to be searched.",
+    }},
+  };
+}

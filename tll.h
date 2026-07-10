@@ -51,6 +51,7 @@ int tll_load(const char * name) {
   t->name = strdup(name);
   t->dl = dl;
   t->next = NULL;
+  fprintf(stderr, "loaded tool %s\n", name);
   return 0;
 }
 

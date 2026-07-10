@@ -19,6 +19,16 @@ static const char * exec(const char * args) {
 
   fprintf(stderr, "view_local_file(%s)\n", path);
 
+#if 0
+  // Enable this to support listing current folder. This exposes more than what
+  // the LLM should have access to (example: output files) and the
+  // 'find_local_file' tool seems more suited for code navigation.
+  //
+  // LLMs might want to read "." to investigate the current repo as a whole,
+  // but we can get a better mileage by telling the bot about the repo
+  // directly. Either explicitly via instructions, or implicitly by asking it
+  // to read a build file.
+
   if (0 == strcmp(path, ".")) {
     DIR * d = opendir(".");
     if (!d) return "listing files is not available. Try something else";
@@ -34,6 +44,7 @@ static const char * exec(const char * args) {
     closedir(d);
     return str_bld_flush(&str);
   }
+#endif
 
   if (*path == '/' || *path == '\\')
     return "You cannot use absolute paths or paths starting with a '/'";

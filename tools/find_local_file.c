@@ -33,9 +33,7 @@ static void find(const char * path, const char * filename, str_bld_t ** out) {
   closedir(dir);
 }
 
-static const char * exec(const char * args) {
-  char * json = jsn_decode(args);
-
+static const char * exec(const char * json) {
   json_object_t * root = jsn_parse_object(json, strlen(json));
   assert(root && "invalid tool call args");
 

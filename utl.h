@@ -1,11 +1,19 @@
 #ifndef UTL_H
 #define UTL_H
 
+#ifdef _WIN32
+#  include <direct.h>
+#  define PATH_MAX MAX_PATH
+#  define getcwd _getcwd
+#  define realpath(P, R) _fullpath(R, P, MAX_PATH)
+#else
+#  include <unistd.h>
+#endif
+
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 const char * utl_env(const char * name, const char * def) {
   char * env = getenv(name);

@@ -1,5 +1,6 @@
 build
 dudubot
+test-tool
 *.a
 *.dll
 *.dSYM

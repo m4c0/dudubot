@@ -10,6 +10,10 @@
 #  include <dlfcn.h>
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "tll_data.h"
 
 tll_t * tll_head;

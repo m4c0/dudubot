@@ -36,7 +36,7 @@ static int run(char ** args) {
 #  define LIB "lib"
 #  define SO ".dylib"
 #  define EXE ""
-#  define TOOL_CFLAGS
+#  define TOOL_CFLAGS "-DEXPORT="
 #elif _WIN32
 #  define LIB ""
 #  define SO ".dll"
@@ -46,7 +46,7 @@ static int run(char ** args) {
 #  define LIB "lib"
 #  define SO ".so"
 #  define EXE ""
-#  define TOOL_CFLAGS "-DEXPORT"
+#  define TOOL_CFLAGS "-DEXPORT="
 #endif
 #define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
 

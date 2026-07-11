@@ -5,6 +5,8 @@
 #  include <windows.h>
 #else
 #  include <dirent.h>
+#  include <limits.h>
+#  include <sys/stat.h>
 #endif
 
 #include <stdio.h>
@@ -26,10 +28,11 @@ int dir_open(dir_t * d, const char * path) {
   d->path = path;
 
 #ifdef _WIN32
+#error PLZ IMPLEMENT
   return 0;
 #else
   d->dir = opendir(path);
-  return d->dir;
+  return d->dir ? 1 : 0;
 #endif
 }
 
@@ -39,14 +42,14 @@ int dir_read(dir_t * d) {
   do {
     d->d = readdir(d->dir);
     if (!d->d) return 0;
-  } while (d->d->name[0] == '.');
+  } while (d->d->d_name[0] == '.');
 
-  snprintf(d->fullpath, PATH_MAX, "%s/%s", d->path, d->d->name);
+  snprintf(d->fullpath, PATH_MAX, "%s/%s", d->path, d->d->d_name);
 
   struct stat st;
-  if (stat(fullpath, &st) != 0) return 0;
+  if (stat(d->fullpath, &st) != 0) return 0;
   d->is_dir = S_ISDIR(st.st_mode);
-  d->name = d->d->name;
+  d->name = d->d->d_name;
 #endif
 
   return 1;
@@ -54,7 +57,7 @@ int dir_read(dir_t * d) {
 void dir_close(dir_t * d) {
 #ifdef _WIN32
 #else
-  closedir(d);
+  closedir(d->dir);
 #endif
 }
 

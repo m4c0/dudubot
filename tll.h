@@ -3,13 +3,11 @@
 
 #ifdef _WIN32
 #  include <windows.h>
-#  define DL_H HMODULE
 #  define dlclose FreeLibrary
 #  define dlopen(X, F) LoadLibrary(X)
 #  define dlsym(H, N) ((void *)GetProcAddress(H, N))
 #else
 #  include <dlfcn.h>
-#  define void *
 #endif
 
 #include "tll_data.h"

@@ -35,19 +35,28 @@ static int run(char ** args) {
 #ifdef __APPLE__
 #  define LIB "lib"
 #  define SO ".dylib"
+#  define EXE ""
+#  define TOOL_CFLAGS
 #elif _WIN32
 #  define LIB ""
 #  define SO ".dll"
+#  define EXE ".exe"
+#  define TOOL_CFLAGS , "-D_CRT_SECURE_NO_WARNINGS", "-D_CRT_NONSTDC_NO_WARNINGS"
 #else
 #  define LIB "lib"
 #  define SO ".so"
+#  define EXE ""
+#  define TOOL_CFLAGS
 #endif
-#define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c")
+#define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c" TOOL_CFLAGS)
 
 int main() {
-  RUN("clang", "-g", "-o", "dudubot", "dudubot.c", "-lcurl", "-rpath", "@executable_path",
+  RUN("clang", "-g", "-o", "dudubot"EXE, "dudubot.c",
 #ifdef _WIN32
       "-D_CRT_SECURE_NO_WARNINGS", "-D_CRT_NONSTDC_NO_WARNINGS", "-DWIN32_MEAN_AND_LEAN",
+      "libcurl.dll.a",
+#else
+      "-rpath", "@executable_path", "-lcurl",
 #endif
       getenv("CFLAGS"));
 

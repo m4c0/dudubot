@@ -1,8 +1,10 @@
 build
 dudubot
+*.a
 *.dll
 *.dSYM
 *.dylib
 *.exe
+*.pdb
 *.so
 *.sqlite

@@ -3,5 +3,6 @@ dudubot
 *.dll
 *.dSYM
 *.dylib
+*.exe
 *.so
 *.sqlite

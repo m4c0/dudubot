@@ -1,11 +1,20 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+
+#ifdef _WIN32
+#  include <process.h>
+#else
+#  include <unistd.h>
+#endif
 
 static int run(char ** args) {
   assert(args && args[0]);
-
+#ifdef _WIN32
+  if (0 == _spawnvp(_P_WAIT, args[0], (const char * const *)args)) {
+    return 0;
+  }
+#else
   pid_t pid = fork();
   if (pid == 0) {
     execvp(args[0], args);
@@ -15,7 +24,7 @@ static int run(char ** args) {
     assert(0 <= waitpid(pid, &sl, 0));
     if (WIFEXITED(sl)) return WEXITSTATUS(sl);
   }
-
+#endif
   fprintf(stderr, "failed to run child process: %s\n", args[0]);
   return 1;
 }

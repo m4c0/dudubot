@@ -87,15 +87,21 @@ static int cycle(void) {
   }
 }
 
+static int end() {
+  msg_save("/tmp/dudubot_last_session");
+  tll_purge();
+  return 0;
+}
+
 int main(int argc, char ** argv) {
   for (int i = 1; i < argc; i++) {
-    msg_load(argv[i], 0);
+    if (0 != strcmp(argv[i], ".")) msg_load(argv[i], 0);
+    else if (!cycle()) return end();
   }
 
   if (read_msg()) return 0;
 
   while (cycle()) {}
 
-  msg_save("/tmp/dudubot_last_session");
-  tll_purge();
+  return end();
 }

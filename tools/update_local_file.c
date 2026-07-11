@@ -32,7 +32,7 @@ static const char * exec(const char * json) {
   return "update failed";
 }
 
-void dudubot_tool(tll_t * t) {
+EXPORT void dudubot_tool(tll_t * t) {
   *t = (tll_t) {
     .desc =
       "Replaces a section of the text content of a file in the workspace "

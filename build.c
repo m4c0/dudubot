@@ -41,19 +41,19 @@ static int run(char ** args) {
 #  define LIB ""
 #  define SO ".dll"
 #  define EXE ".exe"
-#  define TOOL_CFLAGS , "-DPATH_MAX=MAX_PATH", "-D_CRT_SECURE_NO_WARNINGS", "-D_CRT_NONSTDC_NO_WARNINGS", "-DWIN32_MEAN_AND_LEAN"
+#  define TOOL_CFLAGS "-DEXPORT=__declspec(dllexport)", "-DPATH_MAX=MAX_PATH", "-D_CRT_SECURE_NO_WARNINGS", "-D_CRT_NONSTDC_NO_WARNINGS", "-DWIN32_MEAN_AND_LEAN"
 #else
 #  define LIB "lib"
 #  define SO ".so"
 #  define EXE ""
-#  define TOOL_CFLAGS
+#  define TOOL_CFLAGS "-DEXPORT"
 #endif
-#define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c" TOOL_CFLAGS)
+#define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
 
 int main() {
   RUN("clang", "-g", "-o", "dudubot"EXE, "dudubot.c",
 #ifdef _WIN32
-      "libcurl.dll.a" TOOL_CFLAGS,
+      "libcurl.dll.a", TOOL_CFLAGS,
 #else
       "-rpath", "@executable_path", "-lcurl",
 #endif

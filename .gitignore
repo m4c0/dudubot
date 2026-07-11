@@ -5,6 +5,7 @@ dudubot
 *.dSYM
 *.dylib
 *.exe
+*.lib
 *.pdb
 *.so
 *.sqlite

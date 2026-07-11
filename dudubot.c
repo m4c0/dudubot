@@ -1,8 +1,9 @@
 #include <assert.h>
 #include <curl/curl.h>
-#include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "minirent.h"
 
 #include "crl.h"
 #include "jsn.h"

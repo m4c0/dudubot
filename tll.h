@@ -1,9 +1,16 @@
 #ifndef TLL_H
 #define TLL_H
 
-#include "tll_data.h"
+#ifdef _WIN32
+#  include <windows.h>
+#  define dlclose FreeLibrary
+#  define dlopen(X, F) LoadLibrary(X)
+#  define dlsym(H, N) ((void *)GetProcAddress(H, N))
+#else
+#  include <dlfcn.h>
+#endif
 
-#include <dlfcn.h>
+#include "tll_data.h"
 
 tll_t * tll_head;
 
@@ -30,7 +37,11 @@ int tll_load(const char * name) {
   // TODO: load relative to executable based on OS
   // TODO: handle extensions etc based on OS
   char buf[1024];
+#if _WIN32
+  snprintf(buf, sizeof(buf), "%s.dll", name);
+#else
   snprintf(buf, sizeof(buf), "@rpath/lib%s.dylib", name);
+#endif
 
   void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);
   if (!dl) {

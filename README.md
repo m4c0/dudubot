@@ -29,9 +29,9 @@ same config files but different models).
 
 ### Why libcurl?
 
-Because it's readily available in both OSX and Windows. I presume most Linux
-users either have it as well or they should be comfortable enough to install it
-otherwise.
+Because I thought it was readily available in both OSX and Windows. It is in
+OSX but it is not on Windows. Also, I presume most Linux users either have it
+as well or they should be comfortable enough to install it otherwise.
 
 I would love to have the HTTP and SSL code written by myself but SSL is a
 complicated beast to tame. I would be able to cut a lot of corners for HTTP
@@ -66,4 +66,10 @@ another process.
 
 That would be similar to "forking" a session (like what some web-based bots
 provide) but it converts the whole memory into an human-editable file.
+
+## Note on Windows
+
+Code and experience is currently messy on Windows.
+
+We need `libcurl.dll.a` to compile and `libcurl-x64.dll` to run.
 

@@ -17,7 +17,10 @@ static int read_msg(void) {
 
   if (0 == strlen(buf)) return read_msg();
 
-  if (0 == strcmp(buf, ".")) return 0;
+  if (0 == strcmp(buf, "."   )) return 0;
+  if (0 == strcmp(buf, "end" )) return 1;
+  if (0 == strcmp(buf, "exit")) return 1;
+  if (0 == strcmp(buf, "quit")) return 1;
 
   if (0 == strncmp(buf, "tool ", 5)) {
     if (msg_head) {

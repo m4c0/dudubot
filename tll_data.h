@@ -19,6 +19,7 @@ typedef struct tll_s {
 
 typedef struct tll_api_s {
   tll_t * t;
+  const char * dudubot_exe;
 } tll_api_t;
 
 #endif

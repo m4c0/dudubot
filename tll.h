@@ -8,8 +8,10 @@
 #  define dlsym(H, N) ((void *)GetProcAddress(H, N))
 #else
 #  include <dlfcn.h>
+#  include <limits.h>
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +19,24 @@
 #include "tll_data.h"
 
 tll_t * tll_head;
+const char * tll_dudubot_exe;
+
+void tll_init() {
+  assert(!tll_dudubot_exe && "tll_init called twice");
+
+#if _WIN32
+  char exe[PATH_MAX];
+  int len = GetModuleFilename(NULL, exe, PATH_MAX);
+  if (len) tll_dudubot_exe = strdup(exe);
+#else
+  Dl_info addr;
+  int res = dladdr(&tll_init, &addr);
+  if (res) tll_dudubot_exe = strdup(addr.dli_fname);
+#endif
+
+  puts(tll_dudubot_exe);
+  assert(tll_dudubot_exe && "tll_init failed to infer executable location");
+}
 
 void tll_purge() {
   tll_t * m = tll_head;
@@ -38,8 +58,11 @@ tll_t * tll_alloc() {
 
 typedef void (*tll_fn_t)(tll_api_t * t);
 int tll_load(const char * name) {
+  if (!tll_dudubot_exe) tll_init();
+
   // TODO: load relative to executable based on OS
   // TODO: handle extensions etc based on OS
+  // TODO: load from exe/tools/blah.so
   char buf[1024];
 #if _WIN32
   snprintf(buf, sizeof(buf), "%s.dll", name);
@@ -61,6 +84,7 @@ int tll_load(const char * name) {
 
   tll_api_t api = {
     .t = tll_alloc(),
+    .dudubot_exe = tll_dudubot_exe,
   };
   fn(&api);
 

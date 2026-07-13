@@ -26,8 +26,11 @@ void crl_fetch() {
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wrt_fn);
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
+  char * api_key = getenv("DUDUBOT_API_KEY");
+  assert(api_key && "Missing environment 'DUDUBOT_API_KEY'");
+
   char auth[10240];
-  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", getenv("DUDUBOT_API_KEY"));
+  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", api_key);
 
   struct curl_slist * hdrs = NULL;
   hdrs = curl_slist_append(hdrs, "Content-type: application/json");

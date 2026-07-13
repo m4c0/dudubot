@@ -25,14 +25,6 @@ typedef struct msg_s {
 
 msg_t * msg_head = NULL;
 
-void msg_purge() {
-  msg_t * m = msg_head;
-  while (m) {
-    msg_t * mm = m;
-    m = m->next;
-    free(mm);
-  }
-}
 msg_t * msg_alloc() {
   if (msg_head == NULL) {
     return msg_head = calloc(sizeof(msg_t), 1);
@@ -168,10 +160,9 @@ int msg_load_file(FILE * f) {
   return 0;
 }
 
-int msg_load(const char * name, int purge) {
+int msg_load(const char * name) {
   FILE * f = fopen(name, "rb"); 
   assert(f);
-  if (purge) msg_purge();
   if (msg_load_file(f)) return 1;
   printf("loaded from %s\n", name);
   return 0;

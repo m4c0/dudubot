@@ -28,7 +28,7 @@ static int read_msg(void) {
     return read_msg();
   }
   if (0 == strncmp(buf, "load ", 5)) {
-    if (msg_load(buf + 5, 1)) printf("failed to load messages\n");
+    if (msg_load(buf + 5)) printf("failed to load messages\n");
     return read_msg();
   }
   if (0 == strncmp(buf, "save ", 5)) {
@@ -98,7 +98,7 @@ int main(int argc, char ** argv) {
       assert(i + 1 == argc && "run marker should be last");
       loop(NULL);
     }
-    else if (msg_load(argv[i], 0)) return 1;
+    else if (msg_load(argv[i])) return 1;
   }
 
   char session[PATH_MAX];

@@ -77,7 +77,6 @@ static int loop(const char * session) {
     return loop(session);
   }
 
-  fprintf(stderr, "finish reason = %s\n", fini);
   return 0;
 }
 

@@ -101,10 +101,11 @@ int main(int argc, char ** argv) {
       assert(i + 1 == argc && "stdin marker should be last");
       if (msg_load_file(stdin)) return 1;
       while (cycle()) {}
-      return 0;
+      return end();
     }
     else if (0 == strcmp(argv[i], ".")) {
-      if (!cycle()) return end();
+      assert(i + 1 == argc && "run marker should be last");
+      while (cycle()) {}
     }
     else if (msg_load(argv[i], 0)) return 1;
   }

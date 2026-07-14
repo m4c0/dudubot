@@ -48,14 +48,14 @@ static int run(char ** args) {
 #  define EXE ""
 #  define TOOL_CFLAGS "-DEXPORT="
 #endif
-#define TOOL(X) RUN("clang", "-shared", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
+#define TOOL(X) RUN("clang", "-shared", "-Wall", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
 
 #ifdef _WIN32
 #  define EXE_CFLAGS "libcurl.dll.a", TOOL_CFLAGS
 #else
 #  define EXE_CFLAGS "-rpath", "@executable_path", "-lcurl"
 #endif
-#define APP(X) RUN("clang", "-g", "-o", X EXE, X".c", EXE_CFLAGS, getenv("CFLAGS"));
+#define APP(X) RUN("clang", "-Wall", "-g", "-o", X EXE, X".c", EXE_CFLAGS, getenv("CFLAGS"));
 
 int main() {
   APP("dudubot");

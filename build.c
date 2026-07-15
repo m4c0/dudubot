@@ -49,7 +49,7 @@ static int run(char ** args) {
 #  define LIB "lib"
 #  define SO ".so"
 #  define EXE ""
-#  define TOOL_CFLAGS "-DEXPORT="
+#  define TOOL_CFLAGS "-DEXPORT=", "-D_GNU_SOURCE"
 #endif
 #define TOOL(X) RUN("clang", "-shared", "-Wall", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
 
@@ -58,7 +58,7 @@ static int run(char ** args) {
 #elif __APPLE__
 #  define EXE_CFLAGS "-rpath", "@executable_path", "-lcurl"
 #else
-#  define EXE_CFLAGS "-rpath", "$ORIGIN", "-lcurl"
+#  define EXE_CFLAGS "-rpath", "$ORIGIN", "-lcurl", "-D_GNU_SOURCE"
 #endif
 #define APP(X) RUN("clang", "-Wall", "-g", "-o", X EXE, X".c", EXE_CFLAGS, getenv("CFLAGS"));
 

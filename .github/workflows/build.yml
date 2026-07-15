@@ -21,7 +21,11 @@ jobs:
       - run: sudo apt-get install -y libcurl4-openssl-dev
         if: runner.os == 'Linux'
 
-      - run: choco install -y curl
+      - run: curl -L -o curl.zip https://curl.se/windows/latest.cgi?p=win64-mingw.zip
+        if: runner.os == 'Windows'
+      - run: unzip curl.zip
+        if: runner.os == 'Windows'
+      - run: find . -name libcurl.dll.a -exec cp -v '{}' . ';'
         if: runner.os == 'Windows'
 
       - uses: actions/checkout@v6

@@ -2,7 +2,10 @@
 #  define _CRT_SECURE_NO_WARNINGS
 #  define _CRT_NONSTDC_NO_WARNINGS
 #  include <process.h>
+#elif __APPLE__
+#  include <unistd.h>
 #else
+#  include <sys/wait.h>
 #  include <unistd.h>
 #endif
 
@@ -52,8 +55,10 @@ static int run(char ** args) {
 
 #ifdef _WIN32
 #  define EXE_CFLAGS "libcurl.dll.a", TOOL_CFLAGS
-#else
+#elif __APPLE__
 #  define EXE_CFLAGS "-rpath", "@executable_path", "-lcurl"
+#else
+#  define EXE_CFLAGS "-rpath", "'$ORIGIN'", "-lcurl"
 #endif
 #define APP(X) RUN("clang", "-Wall", "-g", "-o", X EXE, X".c", EXE_CFLAGS, getenv("CFLAGS"));
 

@@ -1,6 +1,7 @@
 #ifndef MSG_H
 #define MSG_H
 
+#include "log.h"
 #include "str.h"
 #include "tll.h"
 
@@ -59,7 +60,7 @@ void msg_print_indented(FILE * f, const char * txt) {
 
 int msg_save(const char * name) {
   FILE * f = fopen(name, "wb");
-  assert(f);
+  if (!f) return log_error("could not save messages in file named: %s\n", name);
 
   for (tll_t * t = tll_head; t; t = t->next) fprintf(f, "tool %s\n", t->name);
   if (tll_head) fprintf(f, "\n");

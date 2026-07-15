@@ -66,8 +66,10 @@ int tll_load(const char * name) {
   char buf[1024];
 #if _WIN32
   snprintf(buf, sizeof(buf), "%s.dll", name);
-#else
+#elif __APPLE__
   snprintf(buf, sizeof(buf), "@rpath/lib%s.dylib", name);
+#else
+  snprintf(buf, sizeof(buf), "./lib%s.so", name);
 #endif
 
   void * dl = dlopen(buf, RTLD_LOCAL | RTLD_NOW);

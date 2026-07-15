@@ -101,8 +101,15 @@ int main(int argc, char ** argv) {
     else if (msg_load(argv[i])) return 1;
   }
 
+  char * tmp = getenv("TMPDIR");
+#ifdef _WIN32
+  assert(tmp)
+#else
+  if (!tmp) tmp = "/tmp";
+#endif
+
   char session[PATH_MAX];
-  snprintf(session, PATH_MAX, "%s/dudubot-%ld.chat", getenv("TMPDIR"), time(NULL));
+  snprintf(session, PATH_MAX, "%s/dudubot-%ld.chat", tmp, time(NULL));
   do {
     if (read_msg()) return 0;
   } while (loop(session));

@@ -73,3 +73,20 @@ Code and experience is currently messy on Windows.
 
 We need `libcurl.dll.a` to compile and `libcurl-x64.dll` to run.
 
+## Note on Linux
+
+Tests for Linux were done in an Alpine container. Roughly like this:
+
+```
+$ apk add clang gcc curl curl-dev binutils
+...
+$ clang -o build build.c && ./build
+$ ./test-tool view_local_file '{"path":"tll.h"}'
+...
+$ export DUDUBOT_API_KEY=...
+$ ./dudubot
+> Hello
+...
+>
+```
+

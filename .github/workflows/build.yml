@@ -1,0 +1,31 @@
+name: build
+on: [push, pull_request]
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            exe: ""
+          - os: ubuntu-latest
+            exe: ""
+          - os: windows-latest
+            exe: ".exe"
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - run: sudo apt-get update
+        if: runner.os == 'Linux'
+      - run: sudo apt-get install -y libcurl4-openssl-dev
+        if: runner.os == 'Linux'
+
+      - run: choco install -y curl
+        if: runner.os == 'Windows'
+
+      - uses: actions/checkout@v6
+      - run: clang -Wall -g -o build${{ matrix.exe }} build.c
+      - run: ./build${{ matrix.exe }}
+      - run: ./test-tool${{ matrix.exe }} 'view_local_file' '{"path":"build.c"}'
+

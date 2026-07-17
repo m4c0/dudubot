@@ -73,6 +73,12 @@ have a clear plan.
 
 They are in no particular order.
 
+* A tool akin to `find_local_file` capable of globbing. Glob support should
+  stay in a different tool because they create tangents. Example: if the user
+  already knows how to maintain the code, it's often wasteful to have the AI go
+  rogue investigating the entire repo (it's better to have the code structure
+  documented then). So it is useful to have both in a way the user can select
+  which style works best for them.
 * Support to read sessions ("chats") from the "chats" folder
 * Search paths for chats and tools (should enable user-level customisations and
   easier third-party bundling on Linux)

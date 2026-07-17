@@ -87,6 +87,11 @@ They are in no particular order.
 * Maybe support for MCP? This has very low priority because it requires a
   jsonp-based asynchronous stack.
 
+Some "maybes":
+* Tool to create files?
+* Tool to delete files?
+* Restrict reading of large files?
+
 ## Won't dos
 
 In the world of AI chatbots, these are taken for granted but there are no plans

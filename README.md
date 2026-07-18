@@ -2,8 +2,8 @@
 
 My own LLM bot using C, intended to use with DeepSeek.
 
-You only need a C compiler and `libcurl`. The build script assumes `clang` but
-it should be compatible with GCC and maybe MSVC.
+You only need a C compiler (and `libcurl` on Linux). The build script assumes
+`clang` but it should be compatible with GCC and maybe MSVC.
 
 ## Building and using
 
@@ -144,8 +144,9 @@ like this.
 ### Why libcurl?
 
 Because I thought it was readily available in both OSX and Windows. It is in
-OSX but it is not on Windows. Also, I presume most Linux users either have it
-as well or they should be comfortable enough to install it otherwise.
+OSX but it is not on Windows (where we use WinHTTP now). Also, I presume most
+Linux users either have it as well or they should be comfortable enough to
+install it otherwise.
 
 I would love to have the HTTP and SSL code written by myself but SSL is a
 complicated beast to tame. I would be able to cut a lot of corners for HTTP
@@ -189,12 +190,6 @@ each platform (Mac/Win/Lin) uses entirely different ways for native
 experiences.
 
 Better support will be added when time allows.
-
-## Note on Windows
-
-Code and experience is currently messy on Windows.
-
-We need `libcurl.dll.a` to compile and `libcurl-x64.dll` to run.
 
 ## Note on Linux
 

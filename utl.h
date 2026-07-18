@@ -15,9 +15,20 @@
 #include <string.h>
 #include <sys/stat.h>
 
-const char * utl_env(const char * name, const char * def) {
+wchar_t * utl_mbstowcs(const char * str) {
+  int len = strlen(str);
+  wchar_t * wc = calloc(len + 1, sizeof(wchar_t));
+  mbstowcs(wc, str, len);
+  return wc;
+}
+
+char * utl_env(const char * name, const char * def) {
   char * env = getenv(name);
-  return env ? strdup(env) : def;
+  return strdup(env ? env : def);
+}
+wchar_t * utl_env_wc(const char * name, const char * def) {
+  const char * env = getenv(name);
+  return utl_mbstowcs(env ? env : def);
 }
 
 const char * utl_safe_to_read(const char * path) {

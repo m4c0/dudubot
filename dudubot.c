@@ -1,7 +1,7 @@
 #include <assert.h>
-#include <curl/curl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "minirent.h"
 

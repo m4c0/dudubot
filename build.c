@@ -54,7 +54,7 @@ static int run(char ** args) {
 #define TOOL(X) RUN("clang", "-shared", "-Wall", "-g", "-o", LIB X SO, "tools/"X".c", TOOL_CFLAGS)
 
 #ifdef _WIN32
-#  define EXE_CFLAGS "libcurl.dll.a", TOOL_CFLAGS
+#  define EXE_CFLAGS "-lwinhttp", TOOL_CFLAGS
 #elif __APPLE__
 #  define EXE_CFLAGS "-rpath", "@executable_path", "-lcurl"
 #else

@@ -108,10 +108,10 @@ int main(int argc, char ** argv) {
     else if (msg_load(argv[i])) return 1;
   }
 
-  char * tmp = getenv("TMPDIR");
 #ifdef _WIN32
-  assert(tmp);
+  char * tmp = getenv("TEMP");
 #else
+  char * tmp = getenv("TMPDIR");
   if (!tmp) tmp = "/tmp";
 #endif
 

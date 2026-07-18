@@ -16,6 +16,7 @@ jobs:
             cc: "gcc"
           - os: windows-latest
             exe: ".exe"
+            cc: "clang"
     runs-on: ${{ matrix.os }}
     defaults:
       run:

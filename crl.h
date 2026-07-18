@@ -7,23 +7,15 @@
 
 const char * crl_url;
 
-void crl_fetch(const char * session) {
+static void crl_actually_fetch(const char * auth) {
   CURL * curl = curl_easy_init();
   assert(curl);
-
-  if (!crl_url) crl_url = utl_env("DUDUBOT_URL", "https://api.deepseek.com/chat/completions");
 
   curl_easy_setopt(curl, CURLOPT_URL, crl_url);
   curl_easy_setopt(curl, CURLOPT_POST, 1L);
   curl_easy_setopt(curl, CURLOPT_READFUNCTION, rdr_fn);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wrt_fn);
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
-  char * api_key = getenv("DUDUBOT_API_KEY");
-  assert(api_key && "Missing environment 'DUDUBOT_API_KEY'");
-
-  char auth[10240];
-  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", api_key);
 
   struct curl_slist * hdrs = NULL;
   hdrs = curl_slist_append(hdrs, "Content-type: application/json");
@@ -36,6 +28,18 @@ void crl_fetch(const char * session) {
   curl_slist_free_all(hdrs);
 
   curl_easy_cleanup(curl);
+}
+
+void crl_fetch(void) {
+  if (!crl_url) crl_url = utl_env("DUDUBOT_URL", "https://api.deepseek.com/chat/completions");
+
+  char * api_key = getenv("DUDUBOT_API_KEY");
+  assert(api_key && "Missing environment 'DUDUBOT_API_KEY'");
+
+  char auth[10240];
+  snprintf(auth, sizeof(auth), "Authorization: Bearer %s", api_key);
+
+  crl_actually_fetch(auth);
 }
 
 #endif

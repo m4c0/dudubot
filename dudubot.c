@@ -6,7 +6,6 @@
 #include "minirent.h"
 
 #include "crl.h"
-#include "jsn.h"
 
 static int read_msg(void) {
   printf("> "); fflush(stdout);
@@ -59,7 +58,7 @@ static int loop(const char * session) {
   wrt_reset();
   if (session) msg_save(session);
 
-  crl_fetch(session);
+  crl_fetch();
 
   wrt_flush();
   if (session) msg_save(session);

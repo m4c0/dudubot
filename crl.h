@@ -8,10 +8,6 @@
 const char * crl_url;
 
 void crl_fetch(const char * session) {
-  rdr_reset();
-  wrt_reset();
-  if (session) msg_save(session);
-
   CURL * curl = curl_easy_init();
   assert(curl);
 
@@ -40,10 +36,6 @@ void crl_fetch(const char * session) {
   curl_slist_free_all(hdrs);
 
   curl_easy_cleanup(curl);
-
-  wrt_flush();
-
-  if (session) msg_save(session);
 }
 
 #endif

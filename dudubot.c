@@ -55,7 +55,14 @@ static int read_msg(void) {
   return 0;
 }
 static int loop(const char * session) {
+  rdr_reset();
+  wrt_reset();
+  if (session) msg_save(session);
+
   crl_fetch(session);
+
+  wrt_flush();
+  if (session) msg_save(session);
 
   const char * fini = wrt_msg->fini;
 

@@ -61,7 +61,7 @@ int tll_load(const char * name) {
   if (!tll_dudubot_exe) tll_init();
 
   // TODO: load from exe/tools/blah.so
-  char buf[1024];
+  char buf[PATH_MAX];
 #if _WIN32
   snprintf(buf, sizeof(buf), "%s.dll", name);
 #elif __APPLE__

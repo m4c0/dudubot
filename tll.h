@@ -83,10 +83,13 @@ int tll_load(const char * name) {
   }
 
   tll_api_t api = {
+    .magic = TLL_API_MAGIC_IN,
     .t = tll_alloc(),
     .dudubot_exe = tll_dudubot_exe,
   };
   fn(&api);
+
+  if (api.magic != TLL_API_MAGIC_OUT) return log_error("invalid version magic from tool");
 
   // paranoid standardisation
   api.t->name = strdup(name);

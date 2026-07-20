@@ -52,6 +52,9 @@ static const char * exec(tll_call_t t) {
 }
 
 EXPORT void dudubot_tool(tll_api_t * api) {
+  if (api->magic != TLL_API_MAGIC_IN) return;
+  api->magic = TLL_API_MAGIC_OUT;
+
   *api->t = (tll_t) {
     .desc =
       "Removes a section of the text content from a file in the workspace "

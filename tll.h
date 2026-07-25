@@ -75,10 +75,11 @@ static void * tll__find_tool(const char * name) {
   TLL__TRY_LOAD("%s.dll", name);
 #elif __APPLE__
   TLL__TRY_LOAD("@rpath/lib%s.dylib", name);
-  if (home) TLL__TRY_LOAD("%s/dudubot/tools/lib%s.dylib", home, name);
+  if (home) TLL__TRY_LOAD("%s/.dudubot/tools/lib%s.dylib", home, name);
 #else
   TLL__TRY_LOAD("lib%s.so", name);
-  if (home) TLL__TRY_LOAD("%s/dudubot/tools/lib%s.so", home, name);
+  if (home) TLL__TRY_LOAD("%s/.local/dudubot/tools/lib%s.so", home, name);
+  TLL__TRY_LOAD("/usr/local/libexec/dudubot/tools/lib%s.so", name);
 #endif
 
   return NULL;

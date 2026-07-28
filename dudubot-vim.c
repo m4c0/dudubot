@@ -7,11 +7,10 @@ void log_v(const char * msg, va_list args) {
   jse_cat(&log_buf, "[");
   jse_cat_str(&log_buf, "ex");
   jse_cat(&log_buf, ",");
-  jse_cat_str(&log_buf, "echom");
-  jse_cat(&log_buf, ",");
 
   char buf[1024];
-  vsnprintf(buf, 1024, msg, args);
+  strcat(buf, "echom ");
+  vsnprintf(buf + 6, 1024 - 6, msg, args);
   jse_cat_str(&log_buf, buf);
 
   jse_cat(&log_buf, "]");

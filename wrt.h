@@ -17,7 +17,7 @@ static str_bld_t * wrt_call_args[1000];
 static str_bld_t * wrt_cont;
 static str_bld_t * wrt_reas;
 
-#define wrt_log(...) do { if (!wrt_quiet) fprintf(stderr, __VA_ARGS__); } while (0)
+#define wrt_log(...) do { if (!wrt_quiet) fprintf(stderr, __VA_ARGS__); fflush(stderr); } while (0)
 
 enum {
   rsn_start,
@@ -83,7 +83,6 @@ static void process_json() {
   if (str) {
     if (rsn != rsn_output) {
       wrt_log("\n======== ASSISTANT:\n");
-      fflush(stderr);
       rsn = rsn_output;
     }
     fprintf(stdout, "%s", str); // always output, good for "stdin" mode

@@ -36,9 +36,8 @@ static void process_json() {
 
   const char * str = jsn_str(jsn_find_element(obj, "finish_reason"));
   if (str) {
-    fflush(stdout);
     wrt_msg->fini = strdup(str);
-    wrt_log("\n\nfinish reason: %s\n", str);
+    wrt_log("\n");
     return;
   }
  
@@ -88,6 +87,7 @@ static void process_json() {
       rsn = rsn_output;
     }
     fprintf(stdout, "%s", str); // always output, good for "stdin" mode
+    fflush(stdout);
     str_bld_cat(&wrt_cont, str);
     return;
   }

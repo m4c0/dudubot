@@ -16,6 +16,7 @@ static int cht_loop(const char * session) {
   const char * fini = wrt_msg->fini;
 
   if (!fini) return log_info("LLM ended without a concrete finish reason");
+  log_info("finish reason: %s", wrt_msg->fini);
 
   if (0 == strcmp(fini, "stop")) return 1;
   if (0 == strcmp(fini, "tool_calls")) {

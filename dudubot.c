@@ -5,6 +5,15 @@ void log_v(const char * msg, va_list args) {
   fprintf(stderr, "\n");
 }
 
+void wrt_log_cont(const char * str) {
+  fprintf(stdout, "%s", str);
+  fflush(stdout);
+}
+void wrt_log_reas(const char * str) {
+  fprintf(stderr, "%s", str);
+  fflush(stderr);
+}
+
 static int read_msg(void) {
   printf("> "); fflush(stdout);
 
@@ -60,7 +69,6 @@ int main(int argc, char ** argv) {
     if (0 == strcmp(argv[i], "-")) {
       assert(i + 1 == argc && "stdin marker should be last");
       if (msg_load_file(stdin)) return 1;
-      wrt_quiet = 1;
       cht_loop(NULL);
       return end();
     }

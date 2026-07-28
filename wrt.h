@@ -8,8 +8,6 @@ char json_buf[10240];
 char * json_ptr;
 msg_t * wrt_msg;
 
-static int wrt_quiet = 0;
-
 static const char * wrt_call_ids[1000];
 static str_bld_t * wrt_call_name[1000];
 static str_bld_t * wrt_call_args[1000];
@@ -17,15 +15,8 @@ static str_bld_t * wrt_call_args[1000];
 static str_bld_t * wrt_cont;
 static str_bld_t * wrt_reas;
 
-void wrt_log_cont(const char * str) {
-  fprintf(stdout, "%s", str);
-  fflush(stdout);
-}
-void wrt_log_reas(const char * str) {
-  if (wrt_quiet) return;
-  fprintf(stderr, "%s", str);
-  fflush(stderr);
-}
+void wrt_log_cont(const char * str);
+void wrt_log_reas(const char * str);
 
 enum {
   rsn_start,

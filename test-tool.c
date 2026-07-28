@@ -8,6 +8,16 @@ void log_v(const char * msg, va_list args) {
   fprintf(stderr, "\n");
 }
 
+void wrt_log_cont(const char * str) {
+  fprintf(stdout, "%s", str);
+  fflush(stdout);
+}
+void wrt_log_reas(const char * str) {
+  fprintf(stderr, "%s", str);
+  fflush(stderr);
+}
+
+
 int main(int argc, char ** argv) {
   if (argc != 3) return log_error("usage: %s <tool-name> <json>\n", argv[0]);
 

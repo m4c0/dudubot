@@ -1,11 +1,4 @@
-#include <assert.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#include "minirent.h"
-
-#include "crl.h"
+#include "cht.h"
 
 void log_v(const char * msg, va_list args) {
   vfprintf(stderr, msg, args);
@@ -58,38 +51,6 @@ static int read_msg(void) {
   msg->cont = strdup(buf);
   return 0;
 }
-static int loop(const char * session) {
-  rdr_reset();
-  wrt_reset();
-  if (session) msg_save(session);
-
-  crl_fetch();
-
-  wrt_flush();
-  if (session) msg_save(session);
-
-  const char * fini = wrt_msg->fini;
-
-  if (!fini) {
-    fprintf(stderr, "\nLLM ended without a concrete finish reason\n");
-    return 0;
-  }
-  if (0 == strcmp(fini, "stop")) return 1;
-  if (0 == strcmp(fini, "tool_calls")) {
-    for (msg_tool_call_t * c = wrt_msg->calls; c; c = c->next) {
-      *msg_alloc() = (msg_t) {
-        .role = "tool",
-        .call = strdup(c->id),
-        .name = strdup(c->name),
-        // expecting tools to return either a malloc'd string or a literal
-        .cont = tll_exec(c->id, c->name, c->args),
-      };
-    }
-    return loop(session);
-  }
-
-  return 0;
-}
 
 static int end() {
   tll_purge();
@@ -102,12 +63,12 @@ int main(int argc, char ** argv) {
       assert(i + 1 == argc && "stdin marker should be last");
       if (msg_load_file(stdin)) return 1;
       wrt_quiet = 1;
-      loop(NULL);
+      cht_loop(NULL);
       return end();
     }
     else if (0 == strcmp(argv[i], ".")) {
       assert(i + 1 == argc && "run marker should be last");
-      loop(NULL);
+      cht_loop(NULL);
     }
     else if (msg_load(argv[i])) return 1;
   }
@@ -123,7 +84,7 @@ int main(int argc, char ** argv) {
   snprintf(session, PATH_MAX, "%s/dudubot-%lld.chat", tmp, (long long)time(NULL));
   do {
     if (read_msg()) return 0;
-  } while (loop(session));
+  } while (cht_loop(session));
 
   return end();
 }

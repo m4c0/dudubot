@@ -17,7 +17,15 @@ static str_bld_t * wrt_call_args[1000];
 static str_bld_t * wrt_cont;
 static str_bld_t * wrt_reas;
 
-#define wrt_log(...) do { if (!wrt_quiet) fprintf(stderr, __VA_ARGS__); fflush(stderr); } while (0)
+void wrt_log_cont(const char * str) {
+  fprintf(stdout, "%s", str);
+  fflush(stdout);
+}
+void wrt_log_reas(const char * str) {
+  if (wrt_quiet) return;
+  fprintf(stderr, "%s", str);
+  fflush(stderr);
+}
 
 enum {
   rsn_start,
@@ -37,7 +45,7 @@ static void process_json() {
   const char * str = jsn_str(jsn_find_element(obj, "finish_reason"));
   if (str) {
     wrt_msg->fini = strdup(str);
-    wrt_log("\n");
+    (rsn == rsn_output ? wrt_log_cont : wrt_log_reas)("\n");
     return;
   }
  
@@ -71,10 +79,10 @@ static void process_json() {
   str = jsn_str(jsn_find_element(obj, "reasoning_content"));
   if (str) {
     if (rsn != rsn_reasoning) {
-      wrt_log("\n======== THINKING:\n");
+      wrt_log_reas("\n======== THINKING:\n");
       rsn = rsn_reasoning;
     }
-    wrt_log("%s", str);
+    wrt_log_reas(str);
     str_bld_cat(&wrt_reas, str);
     return;
   }
@@ -82,11 +90,10 @@ static void process_json() {
   str = jsn_str(jsn_find_element(obj, "content"));
   if (str) {
     if (rsn != rsn_output) {
-      wrt_log("\n======== ASSISTANT:\n");
+      wrt_log_cont("\n======== ASSISTANT:\n");
       rsn = rsn_output;
     }
-    fprintf(stdout, "%s", str); // always output, good for "stdin" mode
-    fflush(stdout);
+    wrt_log_cont(str);
     str_bld_cat(&wrt_cont, str);
     return;
   }

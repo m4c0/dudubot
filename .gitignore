@@ -1,5 +1,6 @@
 build
 dudubot
+dudubot-vim
 test-tool
 *.a
 *.dll

@@ -64,6 +64,7 @@ static int run(char ** args) {
 
 int main() {
   APP("dudubot");
+  APP("dudubot-vim");
   APP("test-tool");
 
   TOOL("append_lines");

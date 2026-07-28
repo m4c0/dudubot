@@ -8,11 +8,6 @@ char json_buf[10240];
 char * json_ptr;
 msg_t * wrt_msg;
 
-static json_array_element_t * to_arr(json_value_t * v) {
-  json_array_t * arr = v ? json_value_as_array(v) : NULL;
-  return arr ? arr->start : NULL;
-}
-
 static int wrt_quiet = 0;
 
 static const char * wrt_call_ids[1000];
@@ -33,7 +28,7 @@ static void process_json() {
   struct json_object_s * obj = jsn_parse_object(json_buf, json_ptr - json_buf);
   assert(obj && "Root value should be an object");
 
-  json_array_element_t * arr = to_arr(jsn_find_element(obj, "choices"));
+  json_array_element_t * arr = jsn_arr(jsn_find_element(obj, "choices"));
   assert(arr && "Expecting to have 'choices'");
 
   obj = json_value_as_object(arr->value);
@@ -50,7 +45,7 @@ static void process_json() {
   obj = json_value_as_object(jsn_find_element(obj, "delta"));
   assert(obj && "Delta should be an object");
 
-  arr = to_arr(jsn_find_element(obj, "tool_calls"));
+  arr = jsn_arr(jsn_find_element(obj, "tool_calls"));
   if (arr) {
     while (arr) {
       json_object_t * obj = json_value_as_object(arr->value);

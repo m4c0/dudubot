@@ -20,6 +20,11 @@ static inline json_value_t * jsn_find_element(json_object_t * obj, const char * 
   return NULL;
 }
 
+static inline json_array_element_t * jsn_arr(json_value_t * v) {
+  json_array_t * arr = v ? json_value_as_array(v) : NULL;
+  return arr ? arr->start : NULL;
+}
+
 static inline const char * jsn_str(json_value_t * v) {
   json_string_t * str = v ? json_value_as_string(v) : NULL;
   return str ? str->string : NULL;

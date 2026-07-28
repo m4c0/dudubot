@@ -43,6 +43,19 @@ msg_tool_call_t * msg_alloc_call(msg_t * msg) {
   return m->next = calloc(sizeof(msg_tool_call_t), 1);
 }
 
+msg_t * msg_alloc_user(const char * txt) {
+  msg_t * msg = msg_alloc();
+  msg->role = "user";
+  msg->cont = strdup(txt);
+  return msg;
+}
+msg_t * msg_alloc_system(const char * txt) {
+  msg_t * msg = msg_alloc();
+  msg->role = "system";
+  msg->cont = strdup(txt);
+  return msg;
+}
+
 void msg_print_indented(FILE * f, const char * txt) {
   while (txt && *txt) {
     const char * c = strchr(txt, '\n');

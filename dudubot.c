@@ -46,9 +46,7 @@ static int read_msg(void) {
     *ptr = 0;
   }
 
-  msg_t * msg = msg_alloc();
-  msg->role = "user";
-  msg->cont = strdup(buf);
+  msg_alloc_user(buf);
   return 0;
 }
 

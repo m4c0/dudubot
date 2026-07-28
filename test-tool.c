@@ -3,6 +3,11 @@
 
 #include <assert.h>
 
+void log_v(const char * msg, va_list args) {
+  vfprintf(stderr, msg, args);
+  fprintf(stderr, "\n");
+}
+
 int main(int argc, char ** argv) {
   if (argc != 3) return log_error("usage: %s <tool-name> <json>\n", argv[0]);
 

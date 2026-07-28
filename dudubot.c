@@ -7,6 +7,11 @@
 
 #include "crl.h"
 
+void log_v(const char * msg, va_list args) {
+  vfprintf(stderr, msg, args);
+  fprintf(stderr, "\n");
+}
+
 static int read_msg(void) {
   printf("> "); fflush(stdout);
 

@@ -3,7 +3,7 @@
 
 #include "enc.h"
 
-char * rdr_ptr;
+const char * rdr_ptr;
 static size_t rdr_fn(char * data, size_t sz, size_t n, void * ptr) {
   assert(sz == 1 && "Expecting libcurl to pass size=1 as documented");
 
@@ -13,8 +13,7 @@ static size_t rdr_fn(char * data, size_t sz, size_t n, void * ptr) {
 }
 
 static void rdr_reset() {
-  enc_reset();
-  rdr_ptr = enc_txt;
+  rdr_ptr = enc_reset();
 }
 
 #endif

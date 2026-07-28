@@ -1,51 +1,22 @@
 #ifndef ENC_H
 #define ENC_H
 
+#include "jse.h"
 #include "msg.h"
 #include "utl.h"
 #include "tll.h"
 
-char * enc_txt;
-char * enc_ptr;
-char * enc_end;
+jse_t enc = {0};
 
-void enc_sb_cat(const char * str) {
-  for (; *str && enc_end > enc_ptr + 1; str++, enc_ptr++) *enc_ptr = *str;
-}
-void enc_sb_cat_str(const char * str) {
-  enc_sb_cat("\"");
-  for (; *str && enc_end > enc_ptr + 1; str++) {
-    switch (*str) {
-      case '\"': enc_sb_cat("\\\""); break;
-      case '\\': enc_sb_cat("\\\\"); break;
-      case '\n': enc_sb_cat("\\n" ); break;
-      case '\r': enc_sb_cat("\\r" ); break;
-      case '\t': enc_sb_cat("\\t" ); break;
-      default: *enc_ptr++ = *str; break;
-    }
-  }
-  enc_sb_cat("\"");
-}
-void enc_sb_cat_k(const char * k) {
-  enc_sb_cat_str(k);
-  enc_sb_cat(":");
-}
-void enc_sb_cat_kv(const char * k, const char * v) {
-  enc_sb_cat_k(k);
-  enc_sb_cat_str(v);
-}
-void enc_sb_cat_kv_comma(const char * k, const char * v) {
-  enc_sb_cat_kv(k, v);
-  enc_sb_cat(",");
-}
+void enc_sb_cat(const char * str) { jse_cat(&enc, str); }
+void enc_sb_cat_str(const char * str) { jse_cat_str(&enc, str); }
+void enc_sb_cat_k(const char * k) { jse_cat_k(&enc, k); }
+void enc_sb_cat_kv(const char * k, const char * v) { jse_cat_kv(&enc, k, v); }
+void enc_sb_cat_kv_comma(const char * k, const char * v) { jse_cat_kv_comma(&enc, k, v); }
 
 const char * enc_model;
-void enc_reset() {
-  if (!enc_txt) {
-    enc_txt = malloc(1024000);
-    enc_end = enc_txt + 1024000;
-  }
-  enc_ptr = enc_txt;
+const char * enc_reset() {
+  jse_reset(&enc, 1024000);
 
   if (!enc_model) enc_model = utl_env("DUDUBOT_MODEL", "deepseek-v4-flash");
 
@@ -140,6 +111,6 @@ void enc_reset() {
 
   enc_sb_cat("}");
 
-  *enc_ptr = 0;
+  return jse_finish(&enc);
 }
 #endif

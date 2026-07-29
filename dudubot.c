@@ -64,6 +64,10 @@ static int end() {
   return 0;
 }
 
+static char session[PATH_MAX];
+void print_session(void) {
+  fprintf(stderr, "\nsession saved at: %s\n", session);
+}
 int main(int argc, char ** argv) {
   for (int i = 1; i < argc; i++) {
     if (0 == strcmp(argv[i], "-")) {
@@ -86,8 +90,9 @@ int main(int argc, char ** argv) {
   if (!tmp) tmp = "/tmp";
 #endif
 
-  char session[PATH_MAX];
   snprintf(session, PATH_MAX, "%s/dudubot-%lld.chat", tmp, (long long)time(NULL));
+  fprintf(stderr, "session: %s\n", session);
+  atexit(print_session);
   do {
     if (read_msg()) return 0;
   } while (cht_loop(session));

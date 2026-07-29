@@ -72,6 +72,7 @@ int main() {
   TOOL("find_local_file");
   TOOL("run_investigator");
   TOOL("view_local_file");
+  TOOL("vim_getbufline");
   TOOL("vim_list_buffers");
 
   return 0;

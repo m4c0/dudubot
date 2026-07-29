@@ -18,6 +18,7 @@ void log_v(const char * msg, va_list args) {
   jse_cat(&log_buf, "]");
 
   printf("%s\n", jse_finish(&log_buf));
+  printf("[\"redraw\",\"\"]\n");
 }
 
 void wrt_log_cont(const char * str) {}

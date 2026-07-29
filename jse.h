@@ -9,15 +9,14 @@ typedef struct jse_s {
   char * end;
 } jse_t;
 
-jse_t jse_alloc(unsigned sz) {
-  jse_t res = {0};
-  res.ptr = res.buf = malloc(sz);
-  res.end = res.ptr + sz;
-  return res;
-}
 void jse_reset(jse_t * t, unsigned sz) {
-  if (!t->buf) *t = jse_alloc(sz);
-  t->ptr = t->buf;
+  if (t->buf) {
+    t->ptr = t->buf;
+    return;
+  }
+
+  t->ptr = t->buf = malloc(sz);
+  t->end = t->ptr + sz;
 }
 const char * jse_finish(jse_t * t) {
   *t->ptr = 0;

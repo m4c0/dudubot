@@ -7,7 +7,7 @@
 
 static char * buf;
 static const char * exec(tll_call_t t) {
-  printf("[\"expr\",\"map(getbufinfo({'buflisted':1}), 'v:val.name')\",-1]\n");
+  printf("[\"expr\",\"map(getbufinfo({'buflisted':1}), 'v:val.bufnr .. \\\": \\\" .. v:val.name')\",-1]\n");
   fflush(stdout);
 
   if (!buf) buf = malloc(1024000);
@@ -31,7 +31,7 @@ EXPORT void dudubot_tool(tll_api_t * api) {
   api->magic = TLL_API_MAGIC_OUT;
 
   *api->t = (tll_t) {
-    .desc = "List open files.",
+    .desc = "List available files with their buffer number.",
     .func = exec,
     .reqs = {},
     .props = {},

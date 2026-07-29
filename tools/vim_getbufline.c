@@ -15,7 +15,7 @@ static const char * exec(tll_call_t t) {
   const char * end = jsn_str(jsn_find_element(t.json, "end"));
   if (!end || atoi(end) <= 0) end = "'$'";
 
-  printf("[\"call\",\"bufload(%d)\"]\n", bufnr);
+  printf("[\"call\",\"bufload\",[%d]]\n", bufnr);
   fflush(stdout);
   printf("[\"expr\",\"getbufline(%d, %s, %s)\",-1]\n", bufnr, start, end);
   fflush(stdout);

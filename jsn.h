@@ -6,10 +6,13 @@
 
 static json_value_t * jsn_last_root;
 
-static inline json_object_t * jsn_parse_object(const char * str, int len) {
+static inline json_value_t * jsn_parse(const char * str, int len) {
   if (jsn_last_root) free(jsn_last_root);
+  return jsn_last_root = json_parse(str, len);
+}
 
-  json_value_t * root = jsn_last_root = json_parse(str, len);
+static inline json_object_t * jsn_parse_object(const char * str, int len) {
+  json_value_t * root = jsn_parse(str, len);
   return root ? json_value_as_object(root) : NULL;
 }
 

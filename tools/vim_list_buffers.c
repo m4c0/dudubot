@@ -7,7 +7,7 @@
 
 static char * buf;
 static const char * exec(tll_call_t t) {
-  printf("[\"expr\",\"map(getbufinfo(), 'v:val.name')\",-1]\n");
+  printf("[\"expr\",\"map(getbufinfo({'buflisted':1}), 'v:val.name')\",-1]\n");
   fflush(stdout);
 
   if (!buf) buf = malloc(1024000);

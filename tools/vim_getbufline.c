@@ -15,15 +15,29 @@ static const char * exec(tll_call_t t) {
   const char * end = jsn_str(jsn_find_element(t.json, "end"));
   if (!end || atoi(end) <= 0) end = "'$'";
 
-  printf("[\"call\",\"bufload\",[%d]]\n", bufnr);
-  fflush(stdout);
-  printf("[\"expr\",\"getbufline(%d, %s, %s)\",-1]\n", bufnr, start, end);
+  printf("[\"expr\",\"bufname(%d)\",-2]\n", bufnr);
   fflush(stdout);
 
   if (!buf) buf = malloc(1024000);
   if (!fgets(buf, 1024000, stdin)) return "tool failed to run";
 
   json_array_element_t * arr = jsn_arr(jsn_parse(buf, strlen(buf)));
+  if (!arr) return "VIM returned a non-array message";
+  if (jsn_atoi(arr->value) != -2) return "VIM returned an invalid message";
+  if (!arr->next) return "invalid bufno";
+  
+  const char * bufname = jsn_str(arr->next->value);
+  if (!bufname) return "invalid bufno";
+  if (strstr(bufname, ".chat")) return "invalid buffer";
+
+  printf("[\"call\",\"bufload\",[%d]]\n", bufnr);
+  fflush(stdout);
+  printf("[\"expr\",\"getbufline(%d, %s, %s)\",-1]\n", bufnr, start, end);
+  fflush(stdout);
+
+  if (!fgets(buf, 1024000, stdin)) return "tool failed to run";
+
+  arr = jsn_arr(jsn_parse(buf, strlen(buf)));
   if (!arr) return "VIM returned a non-array message";
 
   if (jsn_atoi(arr->value) != -1) return "VIM returned an invalid message";

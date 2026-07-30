@@ -20,7 +20,12 @@ static const char * exec(tll_call_t t) {
 
   str_bld_t * res = NULL;
   for (arr = jsn_arr(arr->next->value); arr; arr = arr->next) {
-    str_bld_cat(&res, jsn_str(arr->value));
+    const char * bufname = jsn_str(arr->value); 
+
+    // These makes the LLM **VERY** confused.
+    if (strstr(bufname, ".chat")) continue;
+
+    str_bld_cat(&res, bufname);
     str_bld_cat(&res, "\n");
   }
   return str_bld_flush(&res);

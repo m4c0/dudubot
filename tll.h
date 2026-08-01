@@ -69,20 +69,21 @@ static void * tll__try_load(const char * fmt, ...) {
 #define TLL__TRY_LOAD(...) { void * dl; if ((dl = tll__try_load(__VA_ARGS__)) != NULL) return dl; }
 
 static void * tll__find_tool(const char * name) {
-  const char * home = getenv("HOME");
-
 #if _WIN32
   TLL__TRY_LOAD("%s.dll", name);
+  return NULL;
 #elif __APPLE__
+  const char * home = getenv("HOME");
   TLL__TRY_LOAD("@rpath/lib%s.dylib", name);
   if (home) TLL__TRY_LOAD("%s/.dudubot/tools/lib%s.dylib", home, name);
+  return NULL;
 #else
+  const char * home = getenv("HOME");
   TLL__TRY_LOAD("lib%s.so", name);
   if (home) TLL__TRY_LOAD("%s/.local/dudubot/tools/lib%s.so", home, name);
   TLL__TRY_LOAD("/usr/local/libexec/dudubot/tools/lib%s.so", name);
-#endif
-
   return NULL;
+#endif
 }
 
 typedef void (*tll_fn_t)(tll_api_t * t);

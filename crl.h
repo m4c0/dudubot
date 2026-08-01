@@ -53,8 +53,9 @@ static void crl_actually_fetch(const char * auth) {
   WinHttpAddRequestHeaders(req, wauth, -1, WINHTTP_ADDREQ_FLAG_ADD);
   WinHttpAddRequestHeaders(req, L"Content-Type: application/json", -1, WINHTTP_ADDREQ_FLAG_ADD);
 
+  void * req_data = (void *)rdr_ptr; // Dropping "const" because of Windows reasons
   int req_len = strlen(rdr_ptr);
-  assert(WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, rdr_ptr, req_len, req_len, 0));
+  assert(WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, req_data, req_len, req_len, 0));
 
   assert(WinHttpReceiveResponse(req, NULL)); 
 

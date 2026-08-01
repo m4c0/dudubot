@@ -28,6 +28,7 @@ static const char * exec(tll_call_t t) {
     str_bld_cat(&res, bufname);
     str_bld_cat(&res, "\n");
   }
+  if (!res) return "No files are open. Ask the user for help.";
   return str_bld_flush(&res);
 }
 

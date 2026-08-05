@@ -88,7 +88,8 @@ int msg_save(const char * name) {
       msg_print_indented(f, m->reas);
     }
     for (msg_tool_call_t * t = m->calls; t; t = t->next) {
-      fprintf(f, "calls %s %s\n  %s\n.\n", t->id, t->name, t->args);
+      fprintf(f, "calls %s %s\n", t->id, t->name);
+      msg_print_indented(f, t->args);
     }
     if (m->cont) {
       fprintf(f, "cont\n");

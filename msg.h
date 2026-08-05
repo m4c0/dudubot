@@ -160,6 +160,7 @@ int msg_load_file(FILE * f) {
     if (strcmp(buf, ".") == 0) {
       *tgt = str_bld_flush(&tst);
       tgt = NULL;
+      t = NULL;
       continue;
     }
     if (strncmp(buf, "  ", 2) != 0) {

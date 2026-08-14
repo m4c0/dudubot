@@ -15,15 +15,17 @@ void enc_sb_cat_kv(const char * k, const char * v) { jse_cat_kv(&enc, k, v); }
 void enc_sb_cat_kv_comma(const char * k, const char * v) { jse_cat_kv_comma(&enc, k, v); }
 
 const char * enc_model;
+const char * enc_tokens;
 const char * enc_reset() {
   jse_reset(&enc, 1024000);
 
   if (!enc_model) enc_model = utl_env("DUDUBOT_MODEL", "deepseek-v4-flash");
+  if (!enc_tokens) enc_tokens = utl_env("DUDUBOT_MAX_TOKENS", "10240");
 
   enc_sb_cat("{");
   enc_sb_cat_kv_comma("model", enc_model);
-  enc_sb_cat_k("stream");     enc_sb_cat("true");  enc_sb_cat(",");
-  enc_sb_cat_k("max_tokens"); enc_sb_cat("10240"); enc_sb_cat(",");
+  enc_sb_cat_k("stream");     enc_sb_cat("true");     enc_sb_cat(",");
+  enc_sb_cat_k("max_tokens"); enc_sb_cat(enc_tokens); enc_sb_cat(",");
   enc_sb_cat_k("tools");
   enc_sb_cat("[");
 

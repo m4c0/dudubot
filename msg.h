@@ -133,6 +133,7 @@ int msg_load_file(FILE * f) {
       assert(!tgt);
 
       str_bld_t * str = NULL;
+      if (m->cont) str_bld_cat(&str, m->cont);
 
       FILE * ff = fopen(buf + 5, "rb");
       if (!ff) return (fprintf(stderr, "invalid file: %s\n", buf + 5), 1);

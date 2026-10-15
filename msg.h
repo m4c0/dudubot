@@ -129,6 +129,22 @@ int msg_load_file(FILE * f) {
     if (strncmp(buf, "name ", 5) == 0) { assert(!tgt); m->name = strdup(buf + 5); continue; }
     if (strncmp(buf, "fini ", 5) == 0) { assert(!tgt); m->fini = strdup(buf + 5); continue; }
 
+    if (strncmp(buf, "file ", 5) == 0) {
+      assert(!tgt);
+
+      str_bld_t * str = NULL;
+
+      FILE * ff = fopen(buf + 5, "rb");
+      if (!ff) return (fprintf(stderr, "invalid file: %s\n", buf + 5), 1);
+      while (fgets(buf, sizeof(msg_buf), ff)) {
+        str_bld_cat(&str, buf);
+      }
+      fclose(ff);
+
+      m->cont = str_bld_flush(&str); 
+      continue;
+    }
+
     if (strcmp(buf, "cont") == 0) { tgt = &m->cont; continue; }
     if (strcmp(buf, "reas") == 0) { tgt = &m->reas; continue; }
 
